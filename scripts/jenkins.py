@@ -125,7 +125,7 @@ def format_params_for_display(params):
     lines = []
     for key in business_params:
         if key in params:
-            val = str(params[key]) if params[key] else ""
+            val = str(params[key]) if params[key] is not None else ""
             lines.append("  " + key + ": " + val)
     return "\n".join(lines)
 
