@@ -116,16 +116,10 @@ def is_noisy_line(line, min_len=0):
     )
 
 def format_params_for_display(params):
-    key_order = [
-        "platform", "environment", "uploadTarget", "submitForReview",
-        "flutterModuleBranch", "iOSNativeBranch", "androidNativeBranch",
-        "version", "updateNotes", "isDebug", "needPullBranch"
-    ]
     lines = []
-    for key in key_order:
-        if key in params:
-            value = str(params[key]) if params[key] else ""
-            lines.append("  " + key + ": " + value)
+    for key, value in sorted(params.items()):
+        val = str(value) if value else ""
+        lines.append("  " + key + ": " + val)
     return "\n".join(lines)
 
 def find_running(jobs=None):
