@@ -1,0 +1,22 @@
+{
+  "_comment": "Jenkins 技能包配置文件 - 复制为 config.json 并填入实际值",
+  "JENKINS": "http://your-jenkins-server:8080",
+  "USER": "your_jenkins_username",
+  "TOKEN": "your_jenkins_api_token_here",
+  "TIMEOUT": 15,
+  "DEFAULT_JOB": "your-default-job-name",
+  "DEFAULTS": {
+    "flutterModuleBranch": "master",
+    "iOSNativeBranch": "master",
+    "androidNativeBranch": "master",
+    "environment": "test",
+    "platform": "iOS",
+    "uploadTarget": "pgyer",
+    "version": "",
+    "updateNotes": "",
+    "submitForReview": "false",
+    "isDebug": "false",
+    "needPullBranch": "true"
+  },
+  "logTailLines": 500
+}
