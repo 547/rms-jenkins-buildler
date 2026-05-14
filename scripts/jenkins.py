@@ -123,8 +123,9 @@ def format_params_for_display(params):
     ]
     lines = []
     for key in key_order:
-        if key in params and params[key]:
-            lines.append("  " + key + ": " + str(params[key]))
+        if key in params:
+            value = str(params[key]) if params[key] else ""
+            lines.append("  " + key + ": " + value)
     return "\n".join(lines)
 
 def find_running(jobs=None):
@@ -396,7 +397,7 @@ def cmd_running(jobs):
         print("NONE")
     else:
         for j, n, params in found:
-            params_str = ",".join([k + "=" + str(v) for k, v in list(params.items())[:5]])
+            params_str = ",".join([k + "=" + str(v) for k, v in params.items()])
             print(j + "|" + str(n) + "|" + params_str)
 
 def cmd_trigger(job, platform=None, env=None, flutter=None, ios=None, android="master",
