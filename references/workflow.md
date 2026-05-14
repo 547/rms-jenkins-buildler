@@ -6,7 +6,7 @@ This workflow defines the step-by-step process for triggering, monitoring, and m
 
 1. **Single Task Only**: Only one build task can run at a time
 2. **Explicit Confirmation**: Always confirm with user before stopping running tasks
-3. **Parameter Clarity**: Clearly show all parameters for user confirmation
+3. **Parameter Clarity**: Clearly show business parameters (platform, environment, uploadTarget, submitForReview, flutterModuleBranch, iOSNativeBranch, androidNativeBranch, version, updateNotes, isDebug, needPullBranch) for user confirmation
 4. **Log as File**: Always return logs as file attachments for IM platforms
 
 ## User Intent Classification
@@ -95,7 +95,7 @@ Validate against rules before execution:
 python3 jenkins.py trigger <job> <platform> <env> <flutter> <ios> [android] [isDebug] [upload]
 ```
 
-**Critical:** After successful trigger, immediately return `✅ 已触发 #{build_num}` with all parameters.
+**Critical:** After successful trigger, immediately return `✅ 已触发 #{build_num}` with business parameters.
 
 ### Step 6: Return Results
 
@@ -137,7 +137,7 @@ When displaying `info` results, follow this order:
 
 - [ ] **Basic info**: build number, result, trigger time, duration
 - [ ] **Status reason** (FAILURE/ABORTED/NOT_BUILT only): extract error/abort reasons
-- [ ] **Key parameters**: flutterBranch, iOSBranch, androidBranch, environment, version, platform, uploadTarget, updateNotes, submitForReview, isDebug, needPullBranch
+- [ ] **Key parameters**: platform, environment, version, platform, uploadTarget, updateNotes, submitForReview, isDebug, needPullBranch
 - [ ] **Pgyer results** (SUCCESS + pgyer only): extract pgyer/buildkey/buildinfo/qrcode lines
 - [ ] **App Store results** (SUCCESS + appleAppStore only): extract deliver/itunes/processing lines
 

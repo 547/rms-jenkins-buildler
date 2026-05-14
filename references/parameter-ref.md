@@ -185,7 +185,7 @@ platform
 
 Before triggering ANY new build (including rerun), the system checks for running tasks:
 
-1. If running task found → Display build_num and all parameters
+1. If running task found → Display build_num and business parameters (platform, environment, uploadTarget, submitForReview, flutterModuleBranch, iOSNativeBranch, androidNativeBranch, version, updateNotes, isDebug, needPullBranch)
 2. Ask user to confirm if they want to continue (will terminate running task)
 3. Only proceed with new task after user confirmation
 
