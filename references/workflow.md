@@ -39,8 +39,14 @@ python3 jenkins.py running <job>
     platform: iOS
     environment: test
     uploadTarget: pgyer
+    submitForReview: false
     flutterModuleBranch: master
     iOSNativeBranch: developer
+    androidNativeBranch: master
+    version:
+    updateNotes:
+    isDebug: false
+    needPullBranch: false
 
 继续新任务将终止当前任务，是否继续？
 ```

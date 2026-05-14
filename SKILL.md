@@ -126,8 +126,14 @@ Before triggering ANY new build (including rerun), the system checks for running
     platform: iOS
     environment: test
     uploadTarget: pgyer
+    submitForReview: false
     flutterModuleBranch: master
     iOSNativeBranch: developer
+    androidNativeBranch: master
+    version:
+    updateNotes:
+    isDebug: false
+    needPullBranch: false
 
 继续新任务将终止当前任务，是否继续？
 ```
