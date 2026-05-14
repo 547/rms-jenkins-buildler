@@ -37,7 +37,7 @@ All Jenkins operations MUST go through `jenkins.py`. Never use raw curl.
 
 | Command | Description |
 |---------|-------------|
-| `trigger <job> <platform> <env> <flutter> <ios> [android] [isDebug] [upload]` | Trigger a new build |
+| `trigger <job> <platform> <env> <flutter> <ios> [android] [isDebug] [upload] [version] [updateNotes] [submitForReview] [needPullBranch` | Trigger a new build |
 | `rerun <job> <build_num>` | Rerun a specific build (reuse parameters) |
 | `rerun-last <job>` | Rerun the last build |
 | `stop <job> <build_num>` | Stop a specific build |
@@ -152,7 +152,7 @@ python3 jenkins.py running <job>
 ### Step 3: Execute Trigger
 
 ```bash
-python3 jenkins.py trigger <job> <platform> <env> <flutter> <ios> [android] [isDebug] [upload]
+python3 jenkins.py trigger <job> <platform> <env> <flutter> <ios> [android] [isDebug] [upload] [version] [updateNotes] [submitForReview] [needPullBranch]
 ```
 
 ### Step 4: Return Results

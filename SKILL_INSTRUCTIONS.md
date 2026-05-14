@@ -4,7 +4,7 @@
 
 | Command | Syntax |
 |---------|--------|
-| trigger | `trigger <job> <platform> <env> <flutter> <ios> [android] [isDebug] [upload]` |
+| trigger | `trigger <job> <platform> <env> <flutter> <ios> [android] [isDebug] [upload] [version] [updateNotes] [submitForReview] [needPullBranch]` |
 | rerun | `rerun <job> <build_num>` |
 | rerun-last | `rerun-last <job>` |
 | stop | `stop <job> <build_num>` |

@@ -34,7 +34,7 @@ All notable changes to this project will be documented in this file.
 
 | Command | Description |
 |---------|-------------|
-| `trigger <job> <platform> <env> <flutter> <ios> [android] [isDebug] [upload]` | Trigger new build |
+| `trigger <job> <platform> <env> <flutter> <ios> [android] [isDebug] [upload] [version] [updateNotes] [submitForReview] [needPullBranch]` | Trigger new build |
 | `rerun <job> <build_num>` | Rerun specific build |
 | `rerun-last <job>` | Rerun last build |
 | `stop <job> <build_num>` | Stop specific build |

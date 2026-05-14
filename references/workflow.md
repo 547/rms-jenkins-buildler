@@ -92,7 +92,7 @@ Validate against rules before execution:
 ### Step 5: Execute Trigger
 
 ```bash
-python3 jenkins.py trigger <job> <platform> <env> <flutter> <ios> [android] [isDebug] [upload]
+python3 jenkins.py trigger <job> <platform> <env> <flutter> <ios> [android] [isDebug] [upload] [version] [updateNotes] [submitForReview] [needPullBranch]
 ```
 
 **Critical:** After successful trigger, immediately return `✅ 已触发 #{build_num}` with business parameters.
