@@ -68,3 +68,22 @@ All core functions tested successfully:
 | Parameter validation | ✅ Passed |
 | Log file output | ✅ Passed |
 | Jenkins API integration | ✅ Passed |
+
+### Updated Tests (2026-05-14)
+
+Additional tests completed successfully:
+
+| Function | Status |
+|----------|--------|
+| `stop-running` command | ✅ Passed |
+| `rerun` command | ✅ Passed (successfully reran build #1108 → #1109) |
+| `log-tail` command | ✅ Passed (returns file path correctly) |
+| Parameter confirmation flow | ✅ Passed (platform/environment confirmation before trigger) |
+| Smart parameter inference | ✅ Passed |
+| Concurrency control | ✅ Passed (confirms before terminating running tasks) |
+
+### Known Issues
+
+- Jenkins API may take a few seconds to reflect status changes after stop command
+- Build status API may return "Cannot get status" for newly triggered builds (transient)
+
