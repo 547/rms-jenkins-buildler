@@ -112,7 +112,7 @@ These rules are automatically applied when triggering builds:
 
 Before triggering ANY new build (including rerun), the system checks for running tasks:
 
-1. If running task found → Display build_num and all parameters
+1. If running task found → Display build_num and business parameters (platform, environment, uploadTarget, submitForReview, flutterModuleBranch, iOSNativeBranch, androidNativeBranch, version, updateNotes, isDebug, needPullBranch)
 2. Ask user to confirm if they want to continue (will terminate running task)
 3. Only proceed with new task after user confirmation
 
@@ -182,7 +182,7 @@ When displaying `info` results, follow this order:
 
 1. **Basic info**: build number, result, trigger time, duration
 2. **Status details**: For FAILURE/ABORTED/NOT_BUILT, show reason
-3. **Key parameters**: flutterBranch, iOSBranch, androidBranch, environment, version, platform, uploadTarget, updateNotes, submitForReview, isDebug, needPullBranch
+3. **Key parameters**: platform, environment, uploadTarget, submitForReview, flutterModuleBranch, iOSNativeBranch, androidNativeBranch, version, updateNotes, isDebug, needPullBranch
 4. **Upload results**: pgyer or App Store Connect info (if applicable)
 
 ## Log Retrieval
