@@ -63,6 +63,7 @@ All core functions tested successfully:
 | `status` command | ✅ Passed |
 | `last` command | ✅ Passed |
 | `trigger` command | ✅ Passed (successfully triggered build #1106) |
+| `stop` command | ✅ Passed (successfully stopped build #1106) |
 | Concurrent task detection | ✅ Passed |
 | Parameter validation | ✅ Passed |
 | Log file output | ✅ Passed |
