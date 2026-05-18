@@ -9,7 +9,7 @@
     "flutterModuleBranch": "master",
     "iOSNativeBranch": "master",
     "androidNativeBranch": "master",
-    "environment": "test",
+    "environment": "test",      # test | test_old | product | product_old | develop | gray | preproduct
     "platform": "iOS",
     "uploadTarget": "pgyer",
     "version": "",

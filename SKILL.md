@@ -57,7 +57,7 @@ Input:
   - command: string          # One of: trigger, rerun, rerun-last, stop, stop-running,
                              #   status, running, last, info, log-tail, full-log
   - platform: string         # iOS | Android | all (REQUIRED)
-  - environment: string      # test | product | develop | gray | preproduct (REQUIRED)
+  - environment: string      # test | test_old | product | product_old | develop | gray | preproduct (REQUIRED)
   - flutterBranch?: string   # Flutter module branch (default: master)
   - iosBranch?: string       # iOS native branch (default: master)
   - androidBranch?: string   # Android native branch (default: master)
@@ -77,7 +77,7 @@ Output:
 | Parameter | Default | Notes |
 |-----------|---------|-------|
 | `platform` | `iOS` | iOS / Android / all |
-| `environment` | `test` | test / product / develop / gray / preproduct |
+| `environment` | `test` | test / test_old / product / product_old / develop / gray / preproduct |
 | `flutterBranch` | `master` | Flutter module branch |
 | `iosBranch` | `master` | iOS native branch |
 | `androidBranch` | `master` | Android native branch |
@@ -101,7 +101,7 @@ These rules are automatically applied when triggering builds:
 |------|----------|
 | `platform` not specified | Reject - platform is required |
 | `environment` not specified | Reject - environment is required |
-| Android + develop/gray | Auto-downgrade to test, notify user |
+| Android + develop/gray/test_old/product_old | Auto-downgrade to test, notify user |
 | uploadTarget=appleAppStore + Android | Reject - Android not supported |
 | uploadTarget=appleAppStore + environment≠product | Auto-correct to product |
 | isDebug=true + platform=iOS | Reject - iOS not supported |

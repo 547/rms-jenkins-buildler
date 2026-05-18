@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.1] - 2026-05-18
+
+### Added
+
+- **New Environment Options**: Added `test_old` and `product_old` environment options
+  - `test_old`: Test environment (legacy compatibility, different iOS Pgyer channel)
+  - `product_old`: Production environment (legacy compatibility, different iOS Pgyer channel)
+  - Both environments are supported on both iOS and Android platforms
+  - Android platform only auto-downgrades `develop`/`gray` to `test`
+
+### Updated
+
+- Updated all documentation to include new environment options
+- Updated parameter validation logic to support new environments
+
 ## [1.0.0] - 2026-05-14
 
 ### Added

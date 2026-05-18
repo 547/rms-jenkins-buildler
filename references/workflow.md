@@ -226,4 +226,4 @@ Parameters are applied in this order:
 These parameters MUST be provided or will cause rejection:
 
 - `platform` - Target platform (iOS/Android/all)
-- `environment` - API environment (test/product/develop/gray/preproduct)
+- `environment` - API environment (test/test_old/product/product_old/develop/gray/preproduct)

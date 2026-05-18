@@ -37,7 +37,9 @@ Complete parameter documentation for Jenkins build jobs with single-task concurr
 | Value | Description | Android Support |
 |-------|-------------|-----------------|
 | `test` | Test environment | ✅ |
+| `test_old` | Test environment (legacy compatibility) | ✅ |
 | `product` | Production environment | ✅ |
+| `product_old` | Production environment (legacy compatibility) | ✅ |
 | `develop` | Development environment | ❌ (auto-downgrade to test) |
 | `gray` | Gray environment | ❌ (auto-downgrade to test) |
 | `preproduct` | Pre-production environment | ✅ |
