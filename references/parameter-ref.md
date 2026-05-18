@@ -1,249 +1,163 @@
-# Parameter Reference
+# 参数参考
 
-Complete parameter documentation for Jenkins build jobs with single-task concurrency control.
+## 构建参数
 
-## Parameter Summary
+### 必填参数
 
-| Parameter | Type | Default | Required | Platform | Description |
-|-----------|------|---------|----------|----------|-------------|
-| `platform` | enum | `iOS` | **YES** | All | Target platform |
-| `environment` | enum | `test` | **YES** | All | API environment |
-| `flutterModuleBranch` | string | `master` | No | All | Flutter module remote branch |
-| `iOSNativeBranch` | string | `master` | No | iOS/all | iOS native remote branch |
-| `androidNativeBranch` | string | `master` | No | Android/all | Android native remote branch |
-| `uploadTarget` | enum | `pgyer` | No | All | Upload destination |
-| `version` | string | (empty) | No | iOS only | Version number |
-| `updateNotes` | string | (auto) | No | iOS only | Version update notes |
-| `submitForReview` | boolean | `false` | No | iOS+AppStore | Auto submit for review |
-| `isDebug` | boolean | `false` | No | Android only | Build debug variant |
-| `needPullBranch` | boolean | `true` | No | All | Pull remote branch code |
+| 参数名 | 类型 | 说明 | 可选值 |
+|--------|------|------|--------|
+| `platform` | string | 目标平台 | `iOS`, `Android`, `all` |
+| `environment` | string | API 环境 | `test`, `test_old`, `product`, `product_old`, `develop`, `gray`, `preproduct` |
 
-## Required Parameters
+### 可选参数
 
-### platform (Target Platform)
+| 参数名 | 类型 | 默认值 | 说明 | 适用平台 |
+|--------|------|--------|------|---------|
+| `flutterModuleBranch` | string | `master` | Flutter 模块分支 | iOS, Android, all |
+| `iOSNativeBranch` | string | `master` | iOS 原生分支 | iOS, all |
+| `androidNativeBranch` | string | `master` | Android 原生分支 | Android, all |
+| `isDebug` | boolean | `false` | Android Debug 构建 | Android, all |
+| `uploadTarget` | string | `pgyer` | 上传目标 | iOS, Android, all |
+| `version` | string | 空 | 版本号（iOS） | iOS, all |
+| `updateNotes` | string | 空 | 版本更新说明（iOS） | iOS, all |
+| `submitForReview` | boolean | `false` | 自动提交 App Store 审核 | iOS, all |
+| `needPullBranch` | boolean | `true` | 是否拉取远程分支代码 | iOS, Android, all |
 
-**Required:** Yes
+## 配置参数
 
-| Value | Description |
-|-------|-------------|
-| `iOS` | iOS only (default) |
-| `Android` | Android only |
-| `all` | Both iOS and Android |
+### config.json 必填字段
 
-### environment (API Environment)
+| 字段名 | 类型 | 说明 | 示例 |
+|--------|------|------|------|
+| `JENKINS` | string | Jenkins 服务器 URL | `http://jenkins.example.com` |
+| `USER` | string | Jenkins 用户名 | `admin` |
+| `TOKEN` | string | Jenkins API Token | `abc123def456` |
 
-**Required:** Yes
+### config.json 可选字段
 
-| Value | Description | Android Support |
-|-------|-------------|-----------------|
-| `test` | Test environment | ✅ |
-| `test_old` | Test environment (legacy compatibility) | ✅ |
-| `product` | Production environment | ✅ |
-| `product_old` | Production environment (legacy compatibility) | ✅ |
-| `develop` | Development environment | ❌ (auto-downgrade to test) |
-| `gray` | Gray environment | ❌ (auto-downgrade to test) |
-| `preproduct` | Pre-production environment | ✅ |
+| 字段名 | 类型 | 默认值 | 说明 |
+|--------|------|--------|------|
+| `DEFAULT_JOB` | string | 空 | 默认 Job 名称 |
+| `TIMEOUT` | number | 15 | 请求超时时间（秒） |
+| `logTailLines` | number | 500 | 日志默认行数 |
+| `DEFAULTS` | object | `{}` | 默认构建参数 |
 
-## Optional Parameters
+## 智能参数规则
 
-### uploadTarget (Upload Destination)
+### 规则 1：uploadTarget=appleAppStore
 
-| Value | Description | Platform Restriction |
-|-------|-------------|---------------------|
-| `pgyer` | Upload to Pgyer (蒲公英) | iOS + Android |
-| `appleAppStore` | Upload to App Store | iOS only |
+**触发条件：** 用户指定 `uploadTarget=appleAppStore`
 
-**Special Behavior:**
-- When `uploadTarget=appleAppStore`, `platform` is automatically set to `iOS` and `environment` is automatically set to `product`.
+**自动设置：**
+- `platform=iOS`
+- `environment=product`
 
-### submitForReview (Auto Submit for Review)
+**原因：** App Store 只接受 iOS 平台的正式版本
 
-| Value | Description |
-|-------|-------------|
-| `true` | Auto submit to App Store review after upload |
-| `false` | Do not auto submit (default) |
+### 规则 2：submitForReview=true
 
-**Special Behavior:**
-- When `submitForReview=true`:
-  - `platform` is automatically set to `iOS`
-  - `environment` is automatically set to `product`
-  - `uploadTarget` is automatically set to `appleAppStore`
+**触发条件：** 用户指定 `submitForReview=true`
 
-### isDebug (Debug Build)
+**自动设置：**
+- `platform=iOS`
+- `environment=product`
+- `uploadTarget=appleAppStore`
 
-| Value | Description | Platform Restriction |
-|-------|-------------|---------------------|
-| `true` | Build debug variant | Android only |
-| `false` | Build release variant (default) | All |
+**原因：** 只有 iOS 平台才能提交 App Store 审核
 
-### needPullBranch (Pull Remote Code)
+### 规则 3：Android + develop/gray 环境
 
-| Value | Description |
-|-------|-------------|
-| `true` | Jenkins pulls latest code from remote branch before build (default) |
-| `false` | Uses locally cached code (faster, for testing) |
+**触发条件：** `platform=Android` 且 `environment=develop` 或 `gray`
 
-## Smart Parameter Rules
+**自动修正：**
+- `environment=test`
 
-These rules are automatically applied when triggering builds:
+**原因：** Android 不支持 develop 和 gray 环境
 
-| Condition | Action |
-|-----------|--------|
-| `uploadTarget=appleAppStore` | Auto-set `platform=iOS`, `environment=product` |
-| `submitForReview=true` | Auto-set `platform=iOS`, `environment=product`, `uploadTarget=appleAppStore` |
+### 规则 4：Android + appleAppStore
 
-## Validation Rules
+**触发条件：** `platform=Android` 且 `uploadTarget=appleAppStore`
 
-### Rule Matrix
+**结果：** 参数验证失败
 
-| Condition | Result | Message |
-|-----------|--------|---------|
-| `platform` not specified | Reject | "platform 参数不能为空" |
-| `environment` not specified | Reject | "environment 参数不能为空" |
-| Android + develop/gray | Auto-downgrade to test | "Android 不支持 {env}，已降级为 test" |
-| appleAppStore + Android | Reject | "Android 不支持上传 App Store" |
-| appleAppStore + environment≠product | Auto-correct | Auto-set to product |
-| isDebug=true + platform=iOS | Reject | "isDebug=true 仅对 Android 有效" |
+**错误信息：** "Android 不支持上传 App Store，请选择其他上传目标（如 pgyer）"
 
-### Validation Code
+## 参数验证规则
 
-```python
-def validate_params(params):
-    errors = []
-    warnings = []
+### 必填检查
 
-    p = params.get("platform", "")
-    e = params.get("environment", "")
-    u = params.get("uploadTarget", "")
-    vd = params.get("isDebug", "false")
+- `platform` 不能为空
+- `environment` 不能为空
 
-    # Required parameter validation
-    if not p:
-        errors.append("platform 参数不能为空")
-    if not e:
-        errors.append("environment 参数不能为空")
+### 值有效性检查
 
-    # Android environment validation
-    if p in ("Android", "all") and e in ("develop", "gray"):
-        params["environment"] = "test"
-        warnings.append(f"Android 不支持 {e}，已降级为 test")
+| 参数 | 有效值 | 无效值示例 |
+|------|--------|-----------|
+| `platform` | `iOS`, `Android`, `all` | `Windows`, `Linux` |
+| `environment` | `test`, `test_old`, `product`, `product_old`, `develop`, `gray`, `preproduct` | `staging`, `production` |
 
-    # uploadTarget validation
-    if u == "appleAppStore" and p == "Android":
-        errors.append("Android 不支持上传 App Store")
+### 组合有效性检查
 
-    # isDebug validation
-    if vd == "true" and p not in ("Android", "all"):
-        errors.append("isDebug=true 仅对 Android 有效")
+| 组合 | 结果 | 说明 |
+|------|------|------|
+| `platform=Android` + `uploadTarget=appleAppStore` | ❌ 失败 | Android 不能上传 App Store |
+| `platform=iOS` + `isDebug=true` | ❌ 失败 | isDebug 仅对 Android 有效 |
+| `platform=Android` + `environment=develop` | ⚠️ 警告 | 自动降级为 test |
+| `uploadTarget=appleAppStore` + `environment=test` | ⚠️ 警告 | 自动修正为 product |
 
-    return errors, warnings
+## 命令行参数映射
+
+### trigger 命令
+
+```bash
+python3 jenkins.py trigger <job> <platform> <env> <flutter> <ios> [android] [isDebug] [upload] [version] [updateNotes] [submitForReview] [needPullBranch]
 ```
 
-## Environment + UploadTarget Combinations
+| 位置 | 参数名 | 说明 |
+|------|--------|------|
+| 1 | `job` | Job 名称 |
+| 2 | `platform` | 目标平台 |
+| 3 | `env` | API 环境 |
+| 4 | `flutter` | Flutter 分支 |
+| 5 | `ios` | iOS 分支 |
+| 6 | `android` | Android 分支 |
+| 7 | `isDebug` | Debug 标志 |
+| 8 | `upload` | 上传目标 |
+| 9 | `version` | 版本号 |
+| 10 | `updateNotes` | 更新说明 |
+| 11 | `submitForReview` | 提交审核 |
+| 12 | `needPullBranch` | 拉取分支 |
 
-| platform | uploadTarget | environment | Valid | Auto-correction |
-|----------|-------------|------------|-------|-----------------|
-| iOS | pgyer | test | ✅ | - |
-| iOS | pgyer | product | ✅ | - |
-| iOS | appleAppStore | test | ❌ | environment → product |
-| iOS | appleAppStore | product | ✅ | - |
-| Android | pgyer | test | ✅ | - |
-| Android | pgyer | product | ✅ | - |
-| Android | pgyer | develop | ❌ | environment → test |
-| Android | pgyer | gray | ❌ | environment → test |
-| all | pgyer | test | ✅ | - |
-| all | pgyer | product | ✅ | - |
+### 其他命令
 
-## Parameter Dependencies
+```bash
+# 状态
+python3 jenkins.py status [job...]
 
-```
-platform
-├── iOS
-│   └── uses: iOSNativeBranch, version, updateNotes, submitForReview
-├── Android
-│   └── uses: androidNativeBranch, isDebug
-└── all
-    └── uses: iOSNativeBranch, androidNativeBranch
-```
+# 运行中
+python3 jenkins.py running [job...]
 
-## Special Parameters
+# 重新执行
+python3 jenkins.py rerun <job> <build_num>
 
-### version (iOS only)
-- Version number for the build
-- If empty, Jenkins may auto-generate
+# 重新执行最后一次
+python3 jenkins.py rerun-last [job]
 
-### updateNotes (iOS only)
-- Version update notes
-- If empty, auto-generated from last 5 commit messages
+# 停止
+python3 jenkins.py stop <job> <build_num>
 
-### submitForReview (iOS + appleAppStore only)
-- Auto submit to App Store review after upload
-- Only effective when uploadTarget=appleAppStore
-- When set to `true`, automatically sets platform=iOS, environment=product
+# 停止所有运行中
+python3 jenkins.py stop-running [job...]
 
-## Concurrency Control
+# 构建信息
+python3 jenkins.py info <job> <build_num>
 
-### Running Task Detection
+# 最后一次构建
+python3 jenkins.py last <job>
 
-Before triggering ANY new build (including rerun), the system checks for running tasks:
+# 日志尾部
+python3 jenkins.py log-tail <job> <build_num> [n]
 
-1. If running task found → Display build_num and business parameters (platform, environment, uploadTarget, submitForReview, flutterModuleBranch, iOSNativeBranch, androidNativeBranch, version, updateNotes, isDebug, needPullBranch)
-2. Ask user to confirm if they want to continue (will terminate running task)
-3. Only proceed with new task after user confirmation
-
-### Output Format for Running Tasks
-
-```
-发现有任务正在运行:
-  任务: my-jenkins-job
-  构建号: #123
-  参数:
-    platform: iOS
-    environment: test
-    uploadTarget: pgyer
-    submitForReview: false
-    flutterModuleBranch: master
-    iOSNativeBranch: developer
-    androidNativeBranch: master
-    version:
-    updateNotes:
-    isDebug: false
-    needPullBranch: false
-
-继续新任务将终止当前任务，是否继续？
-```
-
-## Log Configuration
-
-### logTailLines
-
-- Default number of lines for `log-tail` command
-- Configured in `config.json`
-- Default value: 500
-- User can override by specifying line count: `log-tail <job> <build_num> 1000`
-
-## Configuration Example
-
-```json
-{
-  "JENKINS": "http://your-jenkins-server:8080",
-  "USER": "your_jenkins_username",
-  "TOKEN": "your_jenkins_api_token_here",
-  "TIMEOUT": 15,
-  "DEFAULT_JOB": "your-default-job-name",
-  "DEFAULTS": {
-    "flutterModuleBranch": "master",
-    "iOSNativeBranch": "master",
-    "androidNativeBranch": "master",
-    "environment": "test",
-    "platform": "iOS",
-    "uploadTarget": "pgyer",
-    "version": "",
-    "updateNotes": "",
-    "submitForReview": "false",
-    "isDebug": "false",
-    "needPullBranch": "true"
-  },
-  "logTailLines": 500
-}
+# 完整日志
+python3 jenkins.py full-log <job> <build_num>
 ```

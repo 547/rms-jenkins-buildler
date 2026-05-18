@@ -1,40 +1,58 @@
-# Build Triggering Workflow
+# 构建工作流
 
-This workflow defines the step-by-step process for triggering, monitoring, and managing Jenkins builds with single-task concurrency control.
+## 触发构建流程
 
-## Core Principles
-
-1. **Single Task Only**: Only one build task can run at a time
-2. **Explicit Confirmation**: Always confirm with user before stopping running tasks
-3. **Parameter Clarity**: Clearly show business parameters (platform, environment, uploadTarget, submitForReview, flutterModuleBranch, iOSNativeBranch, androidNativeBranch, version, updateNotes, isDebug, needPullBranch) for user confirmation
-4. **Log as File**: Always return logs as file attachments for IM platforms
-
-## User Intent Classification
-
-When user wants to trigger a build, classify intent first:
-
-| Intent | Keywords | Action |
-|--------|----------|--------|
-| Rerun specific | "重新执行 #xxx", "用 xxx 再打" | `rerun <job> <build_num>` |
-| Rerun last | "重新执行", "再打个包", "再打" | `rerun-last <job>` |
-| Trigger new | "打个包", "帮我打包" | Follow trigger flow below |
-| Stop build | "停止打包", "终止打包" | `stop-running` or `stop` |
-
-## Trigger Flow (New Build)
-
-### Step 1: Check for Running Tasks
-
-**Critical**: This step applies to ALL build triggers including rerun and rerun-last.
+### Step 1: 检查运行中任务
 
 ```bash
 python3 jenkins.py running <job>
 ```
 
-**If running task found:**
+- 如果运行中 → 显示构建号和业务参数
+- 询问用户是否继续（会终止运行中任务）
+- 只有用户确认后才继续
+
+### Step 2: 参数验证
+
+- 验证 `platform` 和 `environment` 是否提供
+- 应用智能参数规则
+- 检查无效组合
+
+### Step 3: 执行触发
+
+```bash
+python3 jenkins.py trigger <job> <platform> <env> <flutter> <ios> [android] [isDebug] [upload] [version] [updateNotes] [submitForReview] [needPullBranch]
+```
+
+### Step 4: 返回结果
+
+成功触发后立即返回：
+
+```
+✅ 已触发 my-job #124
+
+📦 构建参数：
+  platform: iOS
+  environment: test
+  uploadTarget: pgyer
+  submitForReview: false
+  flutterModuleBranch: master
+  iOSNativeBranch: developer
+  androidNativeBranch: master
+  version:
+  updateNotes:
+  isDebug: false
+  needPullBranch: true
+```
+
+## 运行中任务检测
+
+### 输出格式
+
 ```
 发现有任务正在运行:
-  任务: my-jenkins-job
-  构建号: #123
+  Job: my-job
+  Build #: #123
   参数:
     platform: iOS
     environment: test
@@ -51,179 +69,115 @@ python3 jenkins.py running <job>
 继续新任务将终止当前任务，是否继续？
 ```
 
-- **User confirms** → Stop running task, proceed with new build
-- **User cancels** → Abort, do nothing
+### 确认逻辑
 
-### Step 2: Parameter Confirmation
+- 用户说"继续"或"是" → 终止当前任务，触发新任务
+- 用户说"取消"、"不"、"停" → 取消操作
+- 用户说"错了"、"不对" → 取消操作，等待新输入
 
-Before triggering, ensure **platform** and **environment** are explicitly specified:
+## 构建信息输出格式
 
-```
-📦 打包参数确认
-- platform: iOS (必填)
-- environment: test (必填)
-- flutterModuleBranch: master
-- iOSNativeBranch: developer
-- uploadTarget: pgyer
-- needPullBranch: true
-
-打包吗？
-```
-
-**Abort conditions:**
-- User says "错了", "不对", "停", "参数错了" → Stop immediately, execute nothing
-- platform not specified → Ask user to specify
-- environment not specified → Ask user to specify
-
-### Step 3: Apply Smart Parameter Rules
-
-Automatically set parameters based on special conditions:
-
-| Condition | Auto-set Values |
-|-----------|-----------------|
-| `uploadTarget=appleAppStore` | `platform=iOS`, `environment=product` |
-| `submitForReview=true` | `platform=iOS`, `environment=product`, `uploadTarget=appleAppStore` |
-
-### Step 4: Validate Parameters
-
-Validate against rules before execution:
-
-| Rule | Behavior |
-|------|----------|
-| Android + develop/gray | Auto-downgrade to test, notify user |
-| uploadTarget=appleAppStore + Android | Return error |
-| uploadTarget=appleAppStore + environment≠product | Auto-correct to product |
-| isDebug=true + platform=iOS | Return error |
-
-### Step 5: Execute Trigger
-
-```bash
-python3 jenkins.py trigger <job> <platform> <env> <flutter> <ios> [android] [isDebug] [upload] [version] [updateNotes] [submitForReview] [needPullBranch]
-```
-
-**Critical:** After successful trigger, immediately return `✅ 已触发 #{build_num}` with business parameters.
-
-### Step 6: Return Results
+### 基本信息
 
 ```
-✅ 已触发 my-jenkins-job #124
-
-📦 构建参数：
-  platform: iOS
-  environment: test
-  uploadTarget: pgyer
-  submitForReview: false
-  flutterModuleBranch: master
-  iOSNativeBranch: developer
-  androidNativeBranch: master
-  version:
-  updateNotes:
-  isDebug: false
-  needPullBranch: true
+[✅ Build #123]
+状态: 构建成功
+触发时间: 2025-01-15 10:30:00
+持续时间: 15min
 ```
 
-## Stop Flow
+### 失败原因
 
-| User says | Command |
-|-----------|---------|
-| "停止打包", "终止打包" (no specific number) | `stop-running <job>` |
-| "停止 #xxx", "终止 #xxx" | `stop <job> <build_num>` |
+对于 FAILURE/ABORTED/NOT_BUILT 状态，显示原因：
 
-```bash
-# Stop specific build
-python3 jenkins.py stop <job> <build_num>
-
-# Stop all running builds
-python3 jenkins.py stop-running <job>
+```
+--- 失败原因 ---
+  error: Build failed
+  /path/to/file.swift:123:45: error: cannot find 'xxx' in scope
+  ^
 ```
 
-## Info Output Checklist
+### 关键参数
 
-When displaying `info` results, follow this order:
+```
+--- 参数 ---
+  flutterModuleBranch = master
+  iOSNativeBranch = master
+  androidNativeBranch = master
+  environment = test
+  version = 
+  platform = iOS
+  uploadTarget = pgyer
+  updateNotes = 
+  submitForReview = false
+  isDebug = false
+  needPullBranch = true
+```
 
-- [ ] **Basic info**: build number, result, trigger time, duration
-- [ ] **Status reason** (FAILURE/ABORTED/NOT_BUILT only): extract error/abort reasons
-- [ ] **Key parameters**: platform, environment, version, platform, uploadTarget, updateNotes, submitForReview, isDebug, needPullBranch
-- [ ] **Pgyer results** (SUCCESS + pgyer only): extract pgyer/buildkey/buildinfo/qrcode lines
-- [ ] **App Store results** (SUCCESS + appleAppStore only): extract deliver/itunes/processing lines
+### 上传结果
 
-**Note:** `info` does NOT output console log by default. Console logs are retrieved separately via `log-tail` or `full-log` commands to avoid IM platform message truncation.
+**Pgyer 上传：**
+```
+--- 蒲公英上传 ---
+  Upload to pgyer.com/k/abc123
+  Build URL: https://www.pgyer.com/abc123
+```
 
-## Status Display
+**App Store Connect 上传：**
+```
+--- App Store Connect 上传 ---
+  Successfully uploaded package to App Store Connect
+  Finished the upload to App Store Connect
+  Successfully finished processing the build
+```
 
-| Status | Icon | Description |
-|--------|------|-------------|
-| SUCCESS | ✅ | 构建成功 |
-| FAILURE | ❌ | 构建失败 |
-| ABORTED | ■ | 已终止 |
-| RUNNING | 🔄 | 运行中 |
-| NOT_BUILT | ⚠️ | 未构建 |
+## 日志检索
 
-## Log Retrieval Flow
-
-### log-tail (Default: logTailLines from config.json)
+### log-tail 命令
 
 ```bash
 python3 jenkins.py log-tail <job> <build_num> [n]
 ```
 
-1. Script writes log to file, returns absolute path
-2. Agent sends file via `openclaw message send --media <path> --channel <current_platform>`
-3. Current platform: feishu / wechat / other (from session channel)
+- 返回日志文件的绝对路径
+- 默认行数从 `config.json` 的 `logTailLines` 读取（默认 500）
+- 用户可以指定行数覆盖默认值
 
-### full-log (Complete log)
+### full-log 命令
 
 ```bash
 python3 jenkins.py full-log <job> <build_num>
 ```
 
-Same delivery flow as log-tail.
+- 返回完整日志文件的绝对路径
 
-## Feedback Loop
+### 日志文件处理
 
-After receiving build results:
-
-- **SUCCESS**: Show summary + pgyer/AppStore upload info
-- **FAILURE**: Show failure reasons extracted from log
-- **ABORTED**: Show abortion reasons
-- **RUNNING**: Show current status + estimated wait time
-
-## Validation Script Integration
-
-If validation fails, return structured error:
-
-```json
-{
-  "success": false,
-  "error": "platform 参数不能为空",
-  "suggestion": "请指定 platform 参数（iOS/Android/all）"
-}
+**文件位置：**
+```
+~/.qclaw/workspace/jenkins-logs/jenkins_log_txt_{job}_{build_num}_{uuid}.txt
 ```
 
-## Common Error Handling
+**文件内容：**
+- 已去除 ANSI 转义序列
+- 过滤噪音行（如 `[8mha:`）
+- 保留有意义的日志内容
 
-| Error | Handling |
-|-------|----------|
-| Config file missing | Instruct user to copy from config.json.example |
-| HTTP 403 (auth failed) | Re-authenticate, retry once |
-| HTTP 404 (job not found) | Confirm job name, list available jobs |
-| Build not found | Confirm build number |
-| Network timeout | Retry once, then report error |
-| Running task exists | Show confirmation dialog before proceeding |
-| Missing platform/environment | Ask user to specify required parameters |
+**自动清理：**
+- 24 小时前的日志会被自动删除
 
-## Parameter Priority
+### 文件发送流程
 
-Parameters are applied in this order:
+1. 脚本写入日志文件，返回绝对路径
+2. Agent 使用 `openclaw message send --media <path> --channel <current_platform>` 发送文件
+3. 当前平台根据会话渠道确定：feishu / wechat / other
 
-1. **User input** (highest priority)
-2. **Smart parameter rules** (auto-set based on conditions)
-3. **Config defaults** (from config.json DEFAULTS section)
-4. **Hardcoded defaults** (fallback)
+## 状态输出
 
-## Required Parameters
-
-These parameters MUST be provided or will cause rejection:
-
-- `platform` - Target platform (iOS/Android/all)
-- `environment` - API environment (test/test_old/product/product_old/develop/gray/preproduct)
+| 状态 | 图标 | 描述 |
+|------|------|------|
+| SUCCESS | ✅ | 构建成功 |
+| FAILURE | ❌ | 构建失败 |
+| ABORTED | ■ | 已终止 |
+| RUNNING | 🔄 | 运行中 |
+| NOT_BUILT | ⚠️ | 未构建 |

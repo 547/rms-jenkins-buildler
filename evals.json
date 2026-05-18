@@ -1,0 +1,186 @@
+{
+  "version": "1.1",
+  "description": "评测用例：Jenkins构建技能的自动化测试",
+  "tests": [
+    {
+      "id": "test_trigger_ios_test",
+      "name": "触发 iOS 测试环境构建",
+      "input": {
+        "command": "trigger",
+        "platform": "iOS",
+        "environment": "test",
+        "uploadTarget": "pgyer"
+      },
+      "expected": {
+        "success": true,
+        "contains": []
+      }
+    },
+    {
+      "id": "test_trigger_android_debug",
+      "name": "触发 Android Debug 构建",
+      "input": {
+        "command": "trigger",
+        "platform": "Android",
+        "environment": "test",
+        "isDebug": "true",
+        "uploadTarget": "pgyer"
+      },
+      "expected": {
+        "success": true,
+        "contains": []
+      }
+    },
+    {
+      "id": "test_validate_missing_platform",
+      "name": "验证缺少 platform 参数",
+      "input": {
+        "command": "trigger",
+        "environment": "test"
+      },
+      "expected": {
+        "success": false,
+        "contains": ["platform 参数不能为空"]
+      }
+    },
+    {
+      "id": "test_validate_missing_environment",
+      "name": "验证缺少 environment 参数",
+      "input": {
+        "command": "trigger",
+        "platform": "iOS"
+      },
+      "expected": {
+        "success": false,
+        "contains": ["environment 参数不能为空"]
+      }
+    },
+    {
+      "id": "test_validate_android_appstore",
+      "name": "验证 Android 不能上传 App Store",
+      "input": {
+        "command": "trigger",
+        "platform": "Android",
+        "environment": "product",
+        "uploadTarget": "appleAppStore"
+      },
+      "expected": {
+        "success": false,
+        "contains": ["Android 不支持上传 App Store"]
+      }
+    },
+    {
+      "id": "test_smart_default_appleappstore",
+      "name": "智能参数：appleAppStore 自动设置",
+      "input": {
+        "command": "trigger",
+        "platform": "iOS",
+        "environment": "test",
+        "uploadTarget": "appleAppStore"
+      },
+      "expected": {
+        "success": true,
+        "contains": ["environment=product"]
+      }
+    },
+    {
+      "id": "test_android_env_autodowngrade",
+      "name": "Android 环境自动降级",
+      "input": {
+        "command": "trigger",
+        "platform": "Android",
+        "environment": "develop",
+        "uploadTarget": "pgyer"
+      },
+      "expected": {
+        "success": true,
+        "contains": ["自动降级为 test"]
+      }
+    },
+    {
+      "id": "test_invalid_platform",
+      "name": "验证无效平台值",
+      "input": {
+        "command": "trigger",
+        "platform": "Windows",
+        "environment": "test"
+      },
+      "expected": {
+        "success": false,
+        "contains": ["platform 参数值"]
+      }
+    },
+    {
+      "id": "test_status_command",
+      "name": "查询构建状态",
+      "input": {
+        "command": "status"
+      },
+      "expected": {
+        "success": true,
+        "contains": []
+      }
+    },
+    {
+      "id": "test_running_check",
+      "name": "检查运行中任务",
+      "input": {
+        "command": "running"
+      },
+      "expected": {
+        "success": true,
+        "contains": []
+      }
+    }
+  ],
+  "feedback_rules": [
+    {
+      "pattern": "错了|不对|停|取消|不要",
+      "action": "abort",
+      "response": "已取消操作，请重新输入参数"
+    },
+    {
+      "pattern": "参数错了|重新设置|改一下",
+      "action": "reconfigure",
+      "response": "请提供新的参数"
+    },
+    {
+      "pattern": "成功|好的|可以|没问题",
+      "action": "confirm",
+      "response": "操作已完成"
+    },
+    {
+      "pattern": "为什么失败|失败原因|错误原因",
+      "action": "explain",
+      "response": "让我帮您分析失败原因..."
+    }
+  ],
+  "learning_rules": [
+    {
+      "condition": "连续3次相同错误",
+      "action": "auto_fix",
+      "description": "自动修复常见错误参数"
+    },
+    {
+      "condition": "用户频繁使用特定参数组合",
+      "action": "learn_default",
+      "description": "学习用户偏好的默认参数"
+    },
+    {
+      "condition": "新的错误模式出现",
+      "action": "add_rule",
+      "description": "添加新的验证规则"
+    },
+    {
+      "condition": "成功执行次数超过阈值",
+      "action": "optimize",
+      "description": "优化参数推荐策略"
+    }
+  ],
+  "evolution_settings": {
+    "error_threshold": 3,
+    "success_threshold": 10,
+    "auto_fix_enabled": true,
+    "learning_enabled": true
+  }
+}

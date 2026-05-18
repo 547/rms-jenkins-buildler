@@ -1,141 +1,123 @@
-# Jenkins API Reference
+# Jenkins API 参考
 
-## Basic Information
+## API 端点
 
-- **Jenkins URL**: `http://your-jenkins-server:8080` (configured in `config.json`)
-- **Default User**: `your_username` (configured in `config.json`)
-- **Authentication**: API Token (configured in `config.json`, NOT login password)
+### 基础信息
 
-> ⚠️ Actual credentials must be configured in `config.json`.
+- **Base URL**: 从 `config.json` 的 `JENKINS` 字段读取
+- **认证**: Basic Auth（用户名 + API Token）
+- **CSRF**: 需要先获取 crumb，然后在请求头中包含 `Jenkins-Crumb`
 
----
+### 主要端点
 
-## Authentication Flow
+#### 1. 获取 CSRF Crumb
 
-### Step 1: Login (Save cookie)
-
-```bash
-curl -s -c cookies.txt -b cookies.txt \
-  -d "j_username=${JENKINS_USER}&j_password=${JENKINS_API_TOKEN}&from=%2F&Submit=Sign+In" \
-  "${JENKINS_URL}/j_spring_security_check"
+```
+GET {JENKINS}/crumbIssuer/api/json
 ```
 
-> Note: Use API Token instead of login password for authentication.
-
-### Step 2: Get CSRF Crumb (Required for each API request)
-
-```bash
-CRUMB=$(curl -s -b cookies.txt \
-  "${JENKINS_URL}/crumbIssuer/api/json" | \
-  python3 -c "import sys,json; print(json.load(sys.stdin)['crumbRequestField']+'='+json.load(sys.stdin)['crumb'])")
+**响应：**
+```json
+{
+  "crumb": "Jenkins-Crumb:abc123",
+  "crumbRequestField": "Jenkins-Crumb"
+}
 ```
 
-> Crumb has a time limit (~24 hours). For frequent requests, retrieve a new crumb before each API call.
+#### 2. 获取构建列表
 
----
-
-## Common APIs
-
-### Query Job Status
-
-```bash
-curl -s -b cookies.txt \
-  -H "crumb: $CRUMB" \
-  "${JENKINS_URL}/job/your-job-name/lastBuild/api/json"
+```
+GET {JENKINS}/job/{job_name}/api/json?tree=builds[number,result,building,duration,timestamp,actions[parameters[name,value]]]
 ```
 
-Returned JSON key fields:
-- `result`: null = running; "SUCCESS" / "FAILURE" / "ABORTED" = finished
-- `number`: build number
-- `duration`: duration in milliseconds
-- `url`: build URL
-- `building`: true/false
-
-### Query Specific Build Status
-
-```bash
-curl -s -b cookies.txt \
-  -H "crumb: $CRUMB" \
-  "${JENKINS_URL}/job/your-job-name/<buildNum>/api/json"
+**响应：**
+```json
+{
+  "builds": [
+    {
+      "number": 123,
+      "result": "SUCCESS",
+      "building": false,
+      "duration": 900000,
+      "timestamp": 1736914200000,
+      "actions": [
+        {
+          "parameters": [
+            {"name": "platform", "value": "iOS"},
+            {"name": "environment", "value": "test"}
+          ]
+        }
+      ]
+    }
+  ]
+}
 ```
 
-### Get Build Console Output
+#### 3. 触发构建
 
-```bash
-curl -s -b cookies.txt \
-  -H "crumb: $CRUMB" \
-  "${JENKINS_URL}/job/your-job-name/<buildNum>/consoleText"
+```
+POST {JENKINS}/job/{job_name}/buildWithParameters
+Content-Type: application/x-www-form-urlencoded
 ```
 
-> Extract key error messages from this output when build fails.
-
-### Trigger Build (with parameters)
-
-```bash
-curl -s -b cookies.txt \
-  -H "crumb: $CRUMB" \
-  -X POST \
-  "${JENKINS_URL}/job/your-job-name/buildWithParameters?platform=iOS&environment=test&uploadTarget=pgyer&needPullBranch=true"
+**请求体：**
+```
+platform=iOS&environment=test&flutterModuleBranch=master&...
 ```
 
-> HTTP 302 redirect indicates successful trigger (queued or started).
+**响应：**
+- 成功：返回 201，Location 头包含队列 URL 或构建 URL
+- 失败：返回 4xx/5xx 错误
 
-### Get Queue Position (after trigger)
+#### 4. 停止构建
 
-```bash
-curl -s -b cookies.txt \
-  -H "crumb: $CRUMB" \
-  "${JENKINS_URL}/job/your-job-name/api/json?tree=queueId"
+```
+POST {JENKINS}/job/{job_name}/{build_num}/stop
 ```
 
-### Stop Build
+#### 5. 获取构建日志
 
-```bash
-# Stop latest build
-curl -s -b cookies.txt \
-  -H "crumb: $CRUMB" \
-  -X POST \
-  "${JENKINS_URL}/job/your-job-name/lastBuild/stop"
-
-# Stop specific build
-curl -s -b cookies.txt \
-  -H "crumb: $CRUMB" \
-  -X POST \
-  "${JENKINS_URL}/job/your-job-name/<buildNum>/stop"
+```
+POST {JENKINS}/job/{job_name}/{build_num}/logText/progressiveText
 ```
 
-### View All Build History
+**响应：**
+- 成功：返回日志文本内容
 
-```bash
-curl -s -b cookies.txt \
-  -H "crumb: $CRUMB" \
-  "${JENKINS_URL}/job/your-job-name/api/json?tree=builds[number,result,building,url]"
+#### 6. 获取队列信息
+
+```
+GET {queue_url}/api/json
 ```
 
----
-
-## Build Number Extraction
-
-After successful trigger, the Location header contains the build number:
-```
-Location: http://your-jenkins-server:8080/queue/item/123/
-# or
-Location: http://your-jenkins-server:8080/job/your-job-name/1027/
-```
-
-Extraction method:
-```bash
-# Extract build number from Location header
-BUILD_NUM=$(echo "$LOCATION" | grep -oP 'job/your-job-name/\K\d+')
+**响应：**
+```json
+{
+  "executable": {
+    "number": 124,
+    "url": "{JENKINS}/job/{job_name}/124/"
+  }
+}
 ```
 
----
+## 错误码
 
-## Error Handling
+| HTTP 状态码 | 含义 | 处理方式 |
+|------------|------|---------|
+| 200 | 成功 | 解析响应数据 |
+| 201 | 创建成功 | 从 Location 头获取队列/构建 URL |
+| 403 | 认证失败 | 重试 3 次，检查用户名和 Token |
+| 404 | 资源不存在 | 提示用户检查 job 名称或构建号 |
+| 500 | 服务器错误 | 提示用户联系管理员 |
+| 503 | 服务不可用 | 提示用户稍后重试 |
 
-| Error | Meaning | Handling |
-|-------|---------|----------|
-| HTTP 403 | Cookie expired or no permission | Re-authenticate to get new cookie |
-| HTTP 404 | Job/build not found | Verify job name and build number |
-| HTTP 403 (No valid crumb) | Crumb expired | Retrieve new crumb |
-| "Please wait while Jenkins is preparing" | Jenkins is starting | Wait and retry |
+## 重试策略
+
+- **网络错误**: 最多重试 3 次，每次间隔 2 秒
+- **认证失败（403）**: 最多重试 3 次，CSRF token 可能过期
+- **队列轮询**: 最多等待 10 秒获取构建号
+
+## 超时设置
+
+- **请求超时**: 从 `config.json` 的 `TIMEOUT` 字段读取（默认 15 秒）
+- **队列轮询超时**: 10 秒
