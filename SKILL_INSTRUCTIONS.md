@@ -1,9 +1,9 @@
-# rms-jenkins-buildler
+# RMS Jenkins 构建管理器
 
-## Commands
+## 命令列表
 
-| Command | Syntax |
-|---------|--------|
+| 命令 | 语法 |
+|------|------|
 | trigger | `trigger <job> <platform> <env> <flutter> <ios> [android] [isDebug] [upload] [version] [updateNotes] [submitForReview] [needPullBranch] [isOld]` |
 | rerun | `rerun <job> <build_num>` |
 | rerun-last | `rerun-last <job>` |
@@ -16,61 +16,61 @@
 | log-tail | `log-tail <job> <build_num> [n]` |
 | full-log | `full-log <job> <build_num>` |
 
-## When to Use
+## 适用场景
 
-Invoke this skill when user mentions:
-- "打包", "打个包", "构建"
-- "触发 Jenkins", "开始构建"
-- "查看构建状态", "检查运行状态"
-- "停止构建", "终止任务"
-- "查看日志", "获取构建日志"
-- "重新执行", "再打一次"
+当用户提到以下内容时调用此技能：
+- "打包"、"打个包"、"构建"
+- "触发 Jenkins"、"开始构建"
+- "查看构建状态"、"检查运行状态"
+- "停止构建"、"终止任务"
+- "查看日志"、"获取构建日志"
+- "重新执行"、"再打一次"
 
-## Output Interpretation
+## 输出解释
 
-**Success Response:**
-- `✅ 已触发 #{build_num}` - Build triggered successfully
-- `Found running jobs:` - Shows running task details, requires user confirmation
-- `NONE` - No running tasks
-- File path returned for log commands
+**成功响应：**
+- `✅ 已触发 #{build_num}` - 构建触发成功
+- `Found running jobs:` - 显示运行中任务详情，需要用户确认
+- `NONE` - 没有运行中的任务
+- 日志命令返回文件路径
 
-**Error Response:**
-- "platform 参数不能为空" - Missing required parameter
-- "environment 参数不能为空" - Missing required parameter
-- "API Error HTTP XXXX" - Jenkins API error
+**错误响应：**
+- "platform 参数不能为空" - 缺少必需参数
+- "environment 参数不能为空" - 缺少必需参数
+- "API Error HTTP XXXX" - Jenkins API 错误
 
-## Examples
+## 使用示例
 
-```
-# Trigger build
+```bash
+# 触发构建
 python3 {skill_dir}/scripts/jenkins.py trigger myjob iOS test master master
 
-# Check status
+# 查看状态
 python3 {skill_dir}/scripts/jenkins.py status
 
-# Stop build
+# 停止构建
 python3 {skill_dir}/scripts/jenkins.py stop myjob 123
 
-# Get log
+# 获取日志
 python3 {skill_dir}/scripts/jenkins.py log-tail myjob 123
 ```
 
-## Concurrency Control
+## 并发控制
 
-Before triggering any build:
-1. Check for running tasks with `running` command
-2. If running task exists, show details and ask for confirmation
-3. Only proceed after user confirms termination
+触发任何构建之前：
+1. 使用 `running` 命令检查运行中任务
+2. 如果存在运行中任务，显示详情并请求确认
+3. 只有用户确认终止后才继续
 
-## Smart Parameter Rules
+## 智能参数规则
 
-- `uploadTarget=appleAppStore` → auto-set `platform=iOS`, `environment=product`
-- `submitForReview=true` → auto-set `platform=iOS`, `environment=product`, `uploadTarget=appleAppStore`
+- `uploadTarget=appleAppStore` → 自动设置 `platform=iOS`, `environment=product`
+- `submitForReview=true` → 自动设置 `platform=iOS`, `environment=product`, `uploadTarget=appleAppStore`
 
-## Environment Options
+## 环境选项
 
-| Environment | Description | Android Support |
-|-------------|-------------|-----------------|
+| 环境 | 描述 | Android 支持 |
+|------|------|-------------|
 | `test` | 测试环境 | ✅ |
 | `product` | 生产环境 | ✅ |
 | `develop` | 开发环境 | ❌ (自动降级为 test) |

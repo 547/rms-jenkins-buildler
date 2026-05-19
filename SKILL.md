@@ -5,9 +5,9 @@ description: |
   支持单任务并发控制、自动检测运行中任务、智能参数推断、构建状态监控、日志检索。
 ---
 
-# RMS Jenkins Buildler Skill
+# RMS Jenkins 构建管理器技能
 
-Execute and monitor Jenkins build pipelines for mobile apps (iOS & Android) with single-task concurrency control.
+用于执行和监控移动端应用（iOS & Android）的 Jenkins 构建流水线，支持单任务并发控制。
 
 ## 快速开始
 
@@ -79,83 +79,83 @@ Execute and monitor Jenkins build pipelines for mobile apps (iOS & Android) with
   uploadTarget: pgyer
 ```
 
-## When to Use
+## 适用场景
 
-Use this skill when:
-- User needs to **trigger** a new Jenkins build for iOS/Android apps
-- User wants to **check** build status or **view** build logs
-- User needs to **stop** a running build or **rerun** a previous build
-- User mentions keywords: "打包", "构建", "trigger", "build", "查看日志", "停止构建", "重新执行", "构建状态"
-- User wants to **monitor** an ongoing build process
-- User needs to **retrieve** console output from a specific build
+当以下情况时使用此技能：
+- 用户需要**触发**新的 iOS/Android Jenkins 构建
+- 用户想要**查看**构建状态或**浏览**构建日志
+- 用户需要**停止**运行中的构建或**重新执行**之前的构建
+- 用户提到关键词："打包"、"构建"、"trigger"、"build"、"查看日志"、"停止构建"、"重新执行"、"构建状态"
+- 用户想要**监控**正在进行的构建过程
+- 用户需要**获取**特定构建的控制台输出
 
-## When NOT to Use
+## 不适用场景
 
-Do NOT use this skill when:
-- User asks for general CI/CD advice or Jenkins server configuration help
-- User wants to modify Jenkins job configurations or pipeline definitions
-- User asks about code review, unit testing, or deployment to non-Jenkins environments
-- User asks about non-Jenkins build systems (e.g., GitLab CI, GitHub Actions)
-- User needs to query build history beyond the last few builds
-- User wants to manage Jenkins credentials or security settings
+当以下情况时不使用此技能：
+- 用户询问一般的 CI/CD 建议或 Jenkins 服务器配置帮助
+- 用户想要修改 Jenkins job 配置或流水线定义
+- 用户询问代码审查、单元测试或非 Jenkins 环境的部署
+- 用户询问非 Jenkins 构建系统（如 GitLab CI、GitHub Actions）
+- 用户需要查询最近几次构建之外的构建历史
+- 用户想要管理 Jenkins 凭证或安全设置
 
-## Core Features
+## 核心功能
 
-1. **Single-Task Concurrency Control** - Only one build task can run at a time
-2. **Automatic Running Task Detection** - Before triggering any new build, checks for running tasks
-3. **Smart Parameter Inference** - Automatically sets platform and environment based on upload target
-4. **Mandatory Parameter Confirmation** - platform and environment must be explicitly specified
-5. **Log File Delivery** - Logs are always returned as file attachments for IM platforms
+1. **单任务并发控制** - 同一时间只能运行一个构建任务
+2. **自动检测运行中任务** - 在触发任何新构建之前，检查是否有运行中的任务
+3. **智能参数推断** - 根据上传目标自动设置平台和环境
+4. **强制参数确认** - 必须明确指定平台和环境参数
+5. **日志文件交付** - 日志始终以文件附件形式返回给 IM 平台
 
-## Input / Output
+## 输入 / 输出
 
-### Input
+### 输入参数
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `command` | string | **Yes** | Action to perform: `trigger`, `rerun`, `rerun-last`, `stop`, `stop-running`, `status`, `running`, `last`, `info`, `log-tail`, `full-log` |
-| `job` | string | Yes | Jenkins job name (defaults to `DEFAULT_JOB` from config) |
-| `platform` | string | **Yes** | Target platform: `iOS` \| `Android` \| `all` |
-| `environment` | string | **Yes** | API environment: `test` \| `product` \| `develop` \| `gray` \| `preproduct` |
-| `flutterBranch` | string | No | Flutter module branch (default: `master`) |
-| `iosBranch` | string | No | iOS native branch (default: `master`) |
-| `androidBranch` | string | No | Android native branch (default: `master`) |
-| `isDebug` | boolean | No | Android debug build flag (default: `false`) |
-| `uploadTarget` | string | No | Upload destination: `pgyer` \| `appleAppStore` (default: `pgyer`) |
-| `build_num` | number | Conditional | Build number (required for `rerun`, `stop`, `info`, `log-tail`, `full-log`) |
-| `version` | string | No | Version number (iOS only) |
-| `updateNotes` | string | No | Version update notes (iOS only) |
-| `submitForReview` | boolean | No | Auto submit for App Store review (default: `false`) |
-| `needPullBranch` | boolean | No | Pull remote branch code before build (default: `true`) |
-| `isOld` | boolean | No | Legacy compatibility flag for iOS Pgyer upload (default: `false`, only affects iOS test/product environments) |
+| 参数 | 类型 | 必填 | 描述 |
+|------|------|------|------|
+| `command` | string | **是** | 要执行的操作：`trigger`（触发构建）、`rerun`（重新执行）、`rerun-last`（重新执行上次）、`stop`（停止）、`stop-running`（停止运行中）、`status`（状态）、`running`（运行中任务）、`last`（最后一次）、`info`（详情）、`log-tail`（日志尾部）、`full-log`（完整日志） |
+| `job` | string | 是 | Jenkins job 名称（默认为配置文件中的 `DEFAULT_JOB`） |
+| `platform` | string | **是** | 目标平台：`iOS` \| `Android` \| `all` |
+| `environment` | string | **是** | API 环境：`test`（测试）\| `product`（生产）\| `develop`（开发）\| `gray`（灰度）\| `preproduct`（预生产） |
+| `flutterBranch` | string | 否 | Flutter 模块分支（默认：`master`） |
+| `iosBranch` | string | 否 | iOS 原生分支（默认：`master`） |
+| `androidBranch` | string | 否 | Android 原生分支（默认：`master`） |
+| `isDebug` | boolean | 否 | Android Debug 构建标志（默认：`false`） |
+| `uploadTarget` | string | 否 | 上传目标：`pgyer`（蒲公英）\| `appleAppStore`（App Store）（默认：`pgyer`） |
+| `build_num` | number | 条件 | 构建号（`rerun`、`stop`、`info`、`log-tail`、`full-log` 命令必需） |
+| `version` | string | 否 | 版本号（仅 iOS） |
+| `updateNotes` | string | 否 | 版本更新说明（仅 iOS） |
+| `submitForReview` | boolean | 否 | 自动提交 App Store 审核（默认：`false`） |
+| `needPullBranch` | boolean | 否 | 构建前拉取远程分支代码（默认：`true`） |
+| `isOld` | boolean | 否 | iOS 蒲公英上传旧版本兼容标志（默认：`false`，仅对 iOS 测试/生产环境有效） |
 
-### Output
+### 输出参数
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `success` | boolean | Whether the operation succeeded |
-| `build_num` | number | Build number (returned after successful trigger) |
-| `message` | string | Human-readable status or result message |
-| `errors` | string[] | Error details when `success=false` |
-| `params` | object | Final build parameters after validation (when applicable) |
-| `log_path` | string | Absolute path to log file (for `log-tail`, `full-log`) |
+| 参数 | 类型 | 描述 |
+|------|------|------|
+| `success` | boolean | 操作是否成功 |
+| `build_num` | number | 构建号（成功触发后返回） |
+| `message` | string | 人类可读的状态或结果消息 |
+| `errors` | string[] | `success=false` 时的错误详情 |
+| `params` | object | 验证后的最终构建参数（适用时） |
+| `log_path` | string | 日志文件的绝对路径（用于 `log-tail`、`full-log`） |
 
 #### params 对象字段
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `flutterModuleBranch` | string | Flutter module branch |
-| `iOSNativeBranch` | string | iOS native branch |
-| `androidNativeBranch` | string | Android native branch |
-| `environment` | string | API environment |
-| `version` | string | Version number (iOS only) |
-| `platform` | string | Target platform |
-| `uploadTarget` | string | Upload destination |
-| `updateNotes` | string | Version update notes |
-| `submitForReview` | boolean | Auto submit for App Store review |
-| `isDebug` | boolean | Android debug build flag |
-| `needPullBranch` | boolean | Pull remote branch code before build |
-| `isOld` | boolean | Legacy compatibility flag for iOS Pgyer upload |
+| 字段 | 类型 | 描述 |
+|------|------|------|
+| `flutterModuleBranch` | string | Flutter 模块分支 |
+| `iOSNativeBranch` | string | iOS 原生分支 |
+| `androidNativeBranch` | string | Android 原生分支 |
+| `environment` | string | API 环境 |
+| `version` | string | 版本号（仅 iOS） |
+| `platform` | string | 目标平台 |
+| `uploadTarget` | string | 上传目标 |
+| `updateNotes` | string | 版本更新说明 |
+| `submitForReview` | boolean | 自动提交 App Store 审核 |
+| `isDebug` | boolean | Android Debug 构建标志 |
+| `needPullBranch` | boolean | 构建前拉取远程分支代码 |
+| `isOld` | boolean | iOS 蒲公英上传旧版本兼容标志 |
 
 ## 工作流 / 执行步骤
 
@@ -248,27 +248,27 @@ Do NOT use this skill when:
    - 使用原构建参数触发新构建
    - 返回新构建号和参数
 
-## Core Commands
+## 核心命令
 
 所有 Jenkins 操作必须通过 `jenkins.py` 执行，不要直接使用 curl。
 
 详细命令语法和参数映射见 [参数参考](references/parameter-ref.md)。
 
-## Parameter Defaults
+## 参数默认值
 
 默认参数配置见 [参数参考](references/parameter-ref.md)。
 
-## Smart Parameter Rules
+## 智能参数规则
 
 智能参数规则见 [参数参考](references/parameter-ref.md)。
 
-## Validation Rules
+## 验证规则
 
 参数验证规则见 [参数参考](references/parameter-ref.md)。
 
-## Concurrency Control
+## 并发控制
 
-### Running Task Detection
+### 运行中任务检测
 
 在触发任何新构建（包括重新执行）之前，系统会检查运行中任务：
 
@@ -278,49 +278,49 @@ Do NOT use this skill when:
 
 详细流程和输出格式见 [构建工作流](references/workflow.md)。
 
-## Trigger Flow
+## 触发流程
 
 详细触发流程见 [构建工作流](references/workflow.md)。
 
-## On Failure
+## 失败处理
 
-### Parameter Validation Failure
+### 参数验证失败
 
 ```
 ERROR: 触发构建失败
 HINT: platform 参数不能为空，请指定 iOS、Android 或 all
 ```
 
-### Build Trigger Failure
+### 构建触发失败
 
 ```
 ERROR: 触发构建失败
 HINT: 请求失败 (403): Forbidden
 ```
 
-### Build Failure
+### 构建失败
 
 构建失败时显示详细信息，包括失败原因、参数和日志提示。详细格式见 [构建工作流](references/workflow.md)。
 
-## Build Info Output Format
+## 构建信息输出格式
 
 构建信息输出格式见 [构建工作流](references/workflow.md)。
 
-## Log Retrieval
+## 日志检索
 
 日志检索和文件发送流程见 [构建工作流](references/workflow.md)。
 
-## Status Output
+## 状态输出
 
-| Status | Icon | Description |
-|--------|------|-------------|
+| 状态 | 图标 | 描述 |
+|------|------|------|
 | SUCCESS | ✅ | 构建成功 |
 | FAILURE | ❌ | 构建失败 |
 | ABORTED | ■ | 已终止 |
 | RUNNING | 🔄 | 运行中 |
 | NOT_BUILT | ⚠️ | 未构建 |
 
-For FAILURE/ABORTED/NOT_BUILT status, the reason is extracted and displayed.
+对于 FAILURE/ABORTED/NOT_BUILT 状态，会提取并显示失败原因。
 
 ## 附加资源引用
 
@@ -425,24 +425,24 @@ python3 {skill_dir}/scripts/jenkins.py evolve
 - 由脚本自动管理
 - 用户无需手动编辑
 
-## References
+## 参考文档
 
-- [API Reference](references/api-ref.md) - Jenkins API details
-- [Parameter Reference](references/parameter-ref.md) - Complete parameter documentation
-- [Build Workflow](references/workflow.md) - Detailed triggering and monitoring workflow
+- [API 参考](references/api-ref.md) - Jenkins API 详细说明
+- [参数参考](references/parameter-ref.md) - 完整的参数文档
+- [构建工作流](references/workflow.md) - 详细的触发和监控流程
 
-## Anti-Patterns Checklist
+## 反模式检查表
 
-| Category | Anti-Pattern | Correct Approach |
-|----------|-------------|------------------|
-| **Concurrency** | ❌ Allow multiple builds to run simultaneously | ✅ Always check for running tasks before trigger |
-| **Trigger** | ❌ "打个包" without confirming platform/environment | ✅ Always confirm required parameters |
-| **Trigger** | ❌ Skip build number notification | ✅ Immediately return `✅ 已触发 #{build_num}` after success |
-| **Validation** | ❌ Allow invalid parameter combinations | ✅ Validate all rules; auto-correct where possible |
-| **Error** | ❌ Vague error messages | ✅ Specific errors with actionable suggestions |
-| **Log** | ❌ Output full console log in IM | ✅ Write to file, send as attachment |
-| **Info** | ❌ Mix console log with build info | ✅ Separate: info shows structured data; log retrieved separately |
-| **Workflow** | ❌ Skip user confirmation for destructive actions | ✅ Confirm before stop/trigger; abort on "错了"/"不对"/"停" |
-| **Script** | ❌ Use raw curl for Jenkins API | ✅ Always use jenkins.py as single entry point |
-| **Parameters** | ❌ Assume environment from branch name | ✅ Explicitly ask or use default; never infer |
-| **Output** | ❌ Output unformatted JSON or raw API response | ✅ Structure output with clear sections and hierarchy |
+| 分类 | 反模式 | 正确做法 |
+|------|--------|----------|
+| **并发** | ❌ 允许多个构建同时运行 | ✅ 触发前始终检查运行中任务 |
+| **触发** | ❌ "打个包" 而不确认平台/环境 | ✅ 始终确认必需参数 |
+| **触发** | ❌ 跳过构建号通知 | ✅ 成功后立即返回 `✅ 已触发 #{build_num}` |
+| **验证** | ❌ 允许无效参数组合 | ✅ 验证所有规则；尽可能自动修正 |
+| **错误** | ❌ 模糊的错误消息 | ✅ 具体的错误信息和可操作建议 |
+| **日志** | ❌ 在 IM 中输出完整控制台日志 | ✅ 写入文件，作为附件发送 |
+| **信息** | ❌ 将控制台日志与构建信息混合 | ✅ 分离：info 显示结构化数据；log 单独获取 |
+| **工作流** | ❌ 跳过破坏性操作的用户确认 | ✅ 停止/触发前确认；收到"错了"/"不对"/"停"时中止 |
+| **脚本** | ❌ 直接使用 curl 调用 Jenkins API | ✅ 始终使用 jenkins.py 作为单一入口点 |
+| **参数** | ❌ 从分支名称推断环境 | ✅ 明确询问或使用默认值；永不推断 |
+| **输出** | ❌ 输出未格式化的 JSON 或原始 API 响应 | ✅ 结构化输出，使用清晰的分段和层次结构 |

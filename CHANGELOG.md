@@ -21,8 +21,8 @@ All notable changes to this project will be documented in this file.
 ### Updated
 
 - **更新所有文档**:
-  - `SKILL.md`: 更新 Input/Output 参数表，添加 `params` 对象字段详情
-  - `SKILL_INSTRUCTIONS.md`: 更新 trigger 命令语法
+  - `SKILL.md`: 更新 Input/Output 参数表，添加 `params` 对象字段详情，统一文档语言为中文
+  - `SKILL_INSTRUCTIONS.md`: 更新 trigger 命令语法，统一文档语言为中文
   - `references/parameter-ref.md`: 更新参数说明和 trigger 命令
   - `references/workflow.md`: 更新 trigger 命令语法和返回结果示例
   - `config.json.example`: 更新示例配置
@@ -32,6 +32,8 @@ All notable changes to this project will be documented in this file.
   - `jenkins.py`: 更新参数验证逻辑，移除旧环境，添加 `isOld` 参数支持
   - 更新 `key_params` 列表，包含 `isOld` 参数
   - 更新命令行参数解析，支持第13个参数 `isOld`
+
+- **文档语言统一**: 将所有文档中的英文内容统一为中文，确保语言一致性
 
 ### Test Verification
 
