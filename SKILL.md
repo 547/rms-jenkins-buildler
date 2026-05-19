@@ -351,15 +351,15 @@ python3 {skill_dir}/scripts/jenkins.py log-tail <job> <build_num>
   ✅ 已触发 {job} #{build_num}
   
   📦 构建参数：
+    platform: iOS
+    environment: test
+    uploadTarget: pgyer
+    submitForReview: false
     flutterModuleBranch: master
     iOSNativeBranch: master
     androidNativeBranch: master
-    environment: test
     version:
-    platform: iOS
-    uploadTarget: pgyer
     updateNotes:
-    submitForReview: false
     isDebug: false
     needPullBranch: true
     isOld: false
