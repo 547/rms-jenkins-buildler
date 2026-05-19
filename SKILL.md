@@ -116,7 +116,7 @@ Do NOT use this skill when:
 | `command` | string | **Yes** | Action to perform: `trigger`, `rerun`, `rerun-last`, `stop`, `stop-running`, `status`, `running`, `last`, `info`, `log-tail`, `full-log` |
 | `job` | string | Yes | Jenkins job name (defaults to `DEFAULT_JOB` from config) |
 | `platform` | string | **Yes** | Target platform: `iOS` \| `Android` \| `all` |
-| `environment` | string | **Yes** | API environment: `test` \| `test_old` \| `product` \| `product_old` \| `develop` \| `gray` \| `preproduct` |
+| `environment` | string | **Yes** | API environment: `test` \| `product` \| `develop` \| `gray` \| `preproduct` |
 | `flutterBranch` | string | No | Flutter module branch (default: `master`) |
 | `iosBranch` | string | No | iOS native branch (default: `master`) |
 | `androidBranch` | string | No | Android native branch (default: `master`) |
@@ -127,6 +127,7 @@ Do NOT use this skill when:
 | `updateNotes` | string | No | Version update notes (iOS only) |
 | `submitForReview` | boolean | No | Auto submit for App Store review (default: `false`) |
 | `needPullBranch` | boolean | No | Pull remote branch code before build (default: `true`) |
+| `isOld` | boolean | No | Legacy compatibility flag for iOS Pgyer upload (default: `false`, only affects iOS test/product environments) |
 
 ### Output
 
@@ -138,6 +139,23 @@ Do NOT use this skill when:
 | `errors` | string[] | Error details when `success=false` |
 | `params` | object | Final build parameters after validation (when applicable) |
 | `log_path` | string | Absolute path to log file (for `log-tail`, `full-log`) |
+
+#### params 对象字段
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `flutterModuleBranch` | string | Flutter module branch |
+| `iOSNativeBranch` | string | iOS native branch |
+| `androidNativeBranch` | string | Android native branch |
+| `environment` | string | API environment |
+| `version` | string | Version number (iOS only) |
+| `platform` | string | Target platform |
+| `uploadTarget` | string | Upload destination |
+| `updateNotes` | string | Version update notes |
+| `submitForReview` | boolean | Auto submit for App Store review |
+| `isDebug` | boolean | Android debug build flag |
+| `needPullBranch` | boolean | Pull remote branch code before build |
+| `isOld` | boolean | Legacy compatibility flag for iOS Pgyer upload |
 
 ## 工作流 / 执行步骤
 

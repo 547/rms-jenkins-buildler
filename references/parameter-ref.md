@@ -7,7 +7,7 @@
 | 参数名 | 类型 | 说明 | 可选值 |
 |--------|------|------|--------|
 | `platform` | string | 目标平台 | `iOS`, `Android`, `all` |
-| `environment` | string | API 环境 | `test`, `test_old`, `product`, `product_old`, `develop`, `gray`, `preproduct` |
+| `environment` | string | API 环境 | `test`, `product`, `develop`, `gray`, `preproduct` |
 
 ### 可选参数
 
@@ -22,6 +22,7 @@
 | `updateNotes` | string | 空 | 版本更新说明（iOS） | iOS, all |
 | `submitForReview` | boolean | `false` | 自动提交 App Store 审核 | iOS, all |
 | `needPullBranch` | boolean | `true` | 是否拉取远程分支代码 | iOS, Android, all |
+| `isOld` | boolean | `false` | 是否是旧版本兼容（仅对上传到蒲公英时的iOS测试环境、生产环境有效，即蒲公英渠道不一样） | iOS, all |
 
 ## 配置参数
 
@@ -94,7 +95,7 @@
 | 参数 | 有效值 | 无效值示例 |
 |------|--------|-----------|
 | `platform` | `iOS`, `Android`, `all` | `Windows`, `Linux` |
-| `environment` | `test`, `test_old`, `product`, `product_old`, `develop`, `gray`, `preproduct` | `staging`, `production` |
+| `environment` | `test`, `product`, `develop`, `gray`, `preproduct` | `staging`, `production` |
 
 ### 组合有效性检查
 
@@ -110,7 +111,7 @@
 ### trigger 命令
 
 ```bash
-python3 jenkins.py trigger <job> <platform> <env> <flutter> <ios> [android] [isDebug] [upload] [version] [updateNotes] [submitForReview] [needPullBranch]
+python3 jenkins.py trigger <job> <platform> <env> <flutter> <ios> [android] [isDebug] [upload] [version] [updateNotes] [submitForReview] [needPullBranch] [isOld]
 ```
 
 | 位置 | 参数名 | 说明 |
@@ -127,6 +128,7 @@ python3 jenkins.py trigger <job> <platform> <env> <flutter> <ios> [android] [isD
 | 10 | `updateNotes` | 更新说明 |
 | 11 | `submitForReview` | 提交审核 |
 | 12 | `needPullBranch` | 拉取分支 |
+| 13 | `isOld` | 是否是旧版本兼容（iOS蒲公英渠道，默认false） |
 
 ### 其他命令
 

@@ -22,7 +22,7 @@ Usage:
 Commands:
     status [job...]              - Check build status for specified jobs
     running [job...]             - Check if any build is currently running
-    trigger <job> <platform> <env> <flutter> <ios> [android] [isDebug] [upload] [version] [updateNotes] [submitForReview] [needPullBranch]
+    trigger <job> <platform> <env> <flutter> <ios> [android] [isDebug] [upload] [version] [updateNotes] [submitForReview] [needPullBranch] [isOld]
     rerun <job> <build_num>      - Rerun a specific build with original parameters
     rerun-last [job]             - Rerun the most recent completed build
     stop <job> <build_num>       - Stop a specific running build
@@ -330,7 +330,7 @@ def format_params_for_display(params: Dict[str, Any]) -> str:
     business_params = [
         "platform", "environment", "uploadTarget", "submitForReview",
         "flutterModuleBranch", "iOSNativeBranch", "androidNativeBranch",
-        "version", "updateNotes", "isDebug", "needPullBranch"
+        "version", "updateNotes", "isDebug", "needPullBranch", "isOld"
     ]
     lines = []
     for key in business_params:
@@ -602,8 +602,8 @@ def validate_params(params: Dict[str, Any]) -> Tuple[bool, List[str], List[str]]
     
     if not e:
         errors.append("environment 参数不能为空，请指定测试环境")
-    elif e not in ("test", "test_old", "product", "product_old", "develop", "gray", "preproduct"):
-        errors.append(f"environment 参数值 '{e}' 无效，可选值: test、test_old、product、product_old、develop、gray、preproduct")
+    elif e not in ("test", "product", "develop", "gray", "preproduct"):
+        errors.append(f"environment 参数值 '{e}' 无效，可选值: test、product、develop、gray、preproduct")
     
     # Android environment validation (auto-downgrade)
     if p in ("Android", "all") and e in ("develop", "gray"):
@@ -869,7 +869,7 @@ def cmd_trigger(job: str, platform: Optional[str] = None, env: Optional[str] = N
                 flutter: Optional[str] = None, ios: Optional[str] = None, 
                 android: str = "master", is_debug: str = "false", upload: str = "pgyer", 
                 version: str = "", update_notes: str = "", submit_for_review: str = "false", 
-                need_pull_branch: str = "true") -> None:
+                need_pull_branch: str = "true", is_old: str = "false") -> None:
     """Trigger a new build with specified parameters."""
     params = {
         "platform": platform, "environment": env,
@@ -879,6 +879,7 @@ def cmd_trigger(job: str, platform: Optional[str] = None, env: Optional[str] = N
         "version": version, "updateNotes": update_notes,
         "submitForReview": submit_for_review,
         "needPullBranch": need_pull_branch,
+        "isOld": is_old,
     }
     
     # Validate required parameters
@@ -1044,7 +1045,7 @@ def _format_build_info(info: Optional[Dict[str, Any]], job: str, build_num: Opti
     key_params = [
         "flutterModuleBranch", "iOSNativeBranch", "androidNativeBranch",
         "environment", "version", "platform", "uploadTarget",
-        "updateNotes", "submitForReview", "isDebug", "needPullBranch"
+        "updateNotes", "submitForReview", "isDebug", "needPullBranch", "isOld"
     ]
     for k in key_params:
         print(f"  {k} = {p.get(k, '')}")
@@ -1168,7 +1169,7 @@ def main() -> None:
         print("用法:")
         print("  python3 jenkins.py status [job...]")
         print("  python3 jenkins.py running [job...]")
-        print("  python3 jenkins.py trigger <job> <platform> <env> <flutter> <ios> [android] [isDebug] [upload] [version] [updateNotes] [submitForReview] [needPullBranch]")
+        print("  python3 jenkins.py trigger <job> <platform> <env> <flutter> <ios> [android] [isDebug] [upload] [version] [updateNotes] [submitForReview] [needPullBranch] [isOld]")
         print("  python3 jenkins.py rerun <job> <build_num>")
         print("  python3 jenkins.py rerun-last [job]")
         print("  python3 jenkins.py stop <job> <build_num>")
@@ -1191,13 +1192,13 @@ def main() -> None:
 
         elif cmd == "trigger":
             if len(args) < 5:
-                print_error("参数不足", "用法: trigger <job> <platform> <env> <flutter> <ios> [android] [isDebug] [upload] [version] [updateNotes] [submitForReview] [needPullBranch]")
+                print_error("参数不足", "用法: trigger <job> <platform> <env> <flutter> <ios> [android] [isDebug] [upload] [version] [updateNotes] [submitForReview] [needPullBranch] [isOld]")
                 sys.exit(1)
             
             kw = dict(zip(
                 ["job", "platform", "env", "flutter", "ios", "android", "is_debug", "upload",
-                 "version", "update_notes", "submit_for_review", "need_pull_branch"],
-                args[:12]
+                 "version", "update_notes", "submit_for_review", "need_pull_branch", "is_old"],
+                args[:13]
             ))
             cmd_trigger(**kw)
 
@@ -1551,7 +1552,7 @@ def main() -> None:
         print("用法:")
         print("  python3 jenkins.py status [job...]")
         print("  python3 jenkins.py running [job...]")
-        print("  python3 jenkins.py trigger <job> <platform> <env> <flutter> <ios> [android] [isDebug] [upload] [version] [updateNotes] [submitForReview] [needPullBranch]")
+        print("  python3 jenkins.py trigger <job> <platform> <env> <flutter> <ios> [android] [isDebug] [upload] [version] [updateNotes] [submitForReview] [needPullBranch] [isOld]")
         print("  python3 jenkins.py rerun <job> <build_num>")
         print("  python3 jenkins.py rerun-last [job]")
         print("  python3 jenkins.py stop <job> <build_num>")
@@ -1585,14 +1586,14 @@ def main() -> None:
 
         elif cmd == "trigger":
             if len(args) < 5:
-                print_error("参数不足", "用法: trigger <job> <platform> <env> <flutter> <ios> [android] [isDebug] [upload] [version] [updateNotes] [submitForReview] [needPullBranch]")
+                print_error("参数不足", "用法: trigger <job> <platform> <env> <flutter> <ios> [android] [isDebug] [upload] [version] [updateNotes] [submitForReview] [needPullBranch] [isOld]")
                 learn_from_error("trigger_params_missing")
                 sys.exit(1)
             
             kw = dict(zip(
                 ["job", "platform", "env", "flutter", "ios", "android", "is_debug", "upload",
-                 "version", "update_notes", "submit_for_review", "need_pull_branch"],
-                args[:12]
+                 "version", "update_notes", "submit_for_review", "need_pull_branch", "is_old"],
+                args[:13]
             ))
             
             # Learn preferred params before triggering

@@ -4,7 +4,7 @@
 
 | Command | Syntax |
 |---------|--------|
-| trigger | `trigger <job> <platform> <env> <flutter> <ios> [android] [isDebug] [upload] [version] [updateNotes] [submitForReview] [needPullBranch]` |
+| trigger | `trigger <job> <platform> <env> <flutter> <ios> [android] [isDebug] [upload] [version] [updateNotes] [submitForReview] [needPullBranch] [isOld]` |
 | rerun | `rerun <job> <build_num>` |
 | rerun-last | `rerun-last <job>` |
 | stop | `stop <job> <build_num>` |
@@ -72,9 +72,7 @@ Before triggering any build:
 | Environment | Description | Android Support |
 |-------------|-------------|-----------------|
 | `test` | 测试环境 | ✅ |
-| `test_old` | 测试环境（旧版本兼容，iOS蒲公英渠道不同） | ✅ |
 | `product` | 生产环境 | ✅ |
-| `product_old` | 生产环境（旧版本兼容，iOS蒲公英渠道不同） | ✅ |
 | `develop` | 开发环境 | ❌ (自动降级为 test) |
 | `gray` | 灰度环境 | ❌ (自动降级为 test) |
 | `preproduct` | 预生产环境 | ✅ |

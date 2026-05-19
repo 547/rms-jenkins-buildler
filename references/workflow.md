@@ -21,7 +21,7 @@ python3 jenkins.py running <job>
 ### Step 3: 执行触发
 
 ```bash
-python3 jenkins.py trigger <job> <platform> <env> <flutter> <ios> [android] [isDebug] [upload] [version] [updateNotes] [submitForReview] [needPullBranch]
+python3 jenkins.py trigger <job> <platform> <env> <flutter> <ios> [android] [isDebug] [upload] [version] [updateNotes] [submitForReview] [needPullBranch] [isOld]
 ```
 
 ### Step 4: 返回结果
@@ -43,6 +43,7 @@ python3 jenkins.py trigger <job> <platform> <env> <flutter> <ios> [android] [isD
   updateNotes:
   isDebug: false
   needPullBranch: true
+  isOld: false
 ```
 
 ## 运行中任务检测
@@ -112,6 +113,7 @@ python3 jenkins.py trigger <job> <platform> <env> <flutter> <ios> [android] [isD
   submitForReview = false
   isDebug = false
   needPullBranch = true
+  isOld = false
 ```
 
 ### 上传结果

@@ -2,6 +2,52 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0] - 2026-05-19
+
+### Added
+
+- **isOld 参数**: 新增 `isOld` 布尔参数
+  - 用于旧版本兼容（仅对上传到蒲公英时的iOS测试环境、生产环境有效，即蒲公英渠道不一样）
+  - 默认值：`false`
+  - 仅对 iOS 平台有效
+
+### Removed
+
+- **移除 test_old 和 product_old 环境**
+  - 删除了 `test_old` 环境选项
+  - 删除了 `product_old` 环境选项
+  - 旧版本兼容功能现在通过 `isOld` 参数实现
+
+### Updated
+
+- **更新所有文档**:
+  - `SKILL.md`: 更新 Input/Output 参数表，添加 `params` 对象字段详情
+  - `SKILL_INSTRUCTIONS.md`: 更新 trigger 命令语法
+  - `references/parameter-ref.md`: 更新参数说明和 trigger 命令
+  - `references/workflow.md`: 更新 trigger 命令语法和返回结果示例
+  - `config.json.example`: 更新示例配置
+  - `CHANGELOG.md`: 更新 Core Commands 表格
+
+- **更新脚本代码**:
+  - `jenkins.py`: 更新参数验证逻辑，移除旧环境，添加 `isOld` 参数支持
+  - 更新 `key_params` 列表，包含 `isOld` 参数
+  - 更新命令行参数解析，支持第13个参数 `isOld`
+
+### Test Verification
+
+自我测试全部通过:
+
+| 测试 | 状态 |
+|------|------|
+| 触发 iOS 测试环境构建 | ✅ 通过 |
+| 触发 Android Debug 构建 | ✅ 通过 |
+| 验证缺少 platform 参数 | ✅ 通过 |
+| 验证缺少 environment 参数 | ✅ 通过 |
+| 验证 Android 不能上传 App Store | ✅ 通过 |
+| 智能参数：appleAppStore 自动设置 | ✅ 通过 |
+| Android 环境自动降级 | ✅ 通过 |
+| 验证无效平台值 | ✅ 通过 |
+
 ## [1.1.0] - 2026-05-18
 
 ### Added
@@ -111,7 +157,7 @@ All notable changes to this project will be documented in this file.
 
 | Command | Description |
 |---------|-------------|
-| `trigger <job> <platform> <env> <flutter> <ios> [android] [isDebug] [upload] [version] [updateNotes] [submitForReview] [needPullBranch]` | Trigger new build |
+| `trigger <job> <platform> <env> <flutter> <ios> [android] [isDebug] [upload] [version] [updateNotes] [submitForReview] [needPullBranch] [isOld]` | Trigger new build |
 | `rerun <job> <build_num>` | Rerun specific build |
 | `rerun-last <job>` | Rerun last build |
 | `stop <job> <build_num>` | Stop specific build |

@@ -9,14 +9,15 @@
     "flutterModuleBranch": "master",
     "iOSNativeBranch": "master",
     "androidNativeBranch": "master",
-    "environment": "test",      # test | test_old | product | product_old | develop | gray | preproduct
+    "environment": "test",      # test | product | develop | gray | preproduct
     "platform": "iOS",
     "uploadTarget": "pgyer",
     "version": "",
     "updateNotes": "",
     "submitForReview": "false",
     "isDebug": "false",
-    "needPullBranch": "true"
+    "needPullBranch": "true",
+    "isOld": "false"
   },
   "logTailLines": 500
 }
