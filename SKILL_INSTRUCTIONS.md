@@ -29,8 +29,25 @@
 ## 输出解释
 
 **成功响应：**
-- `✅ 已触发 #{build_num}` - 构建触发成功
-- `Found running jobs:` - 显示运行中任务详情，需要用户确认
+- `✅ 已触发 #{build_num}` - 构建触发成功，**输出所有12个业务参数**：
+  ```
+  ✅ 已触发 my-job #124
+  
+  📦 构建参数：
+    flutterModuleBranch: master
+    iOSNativeBranch: master
+    androidNativeBranch: master
+    environment: test
+    version:
+    platform: iOS
+    uploadTarget: pgyer
+    updateNotes:
+    submitForReview: false
+    isDebug: false
+    needPullBranch: true
+    isOld: false
+  ```
+- `发现有任务正在运行:` - 显示运行中任务详情（**包含所有12个业务参数**），需要用户确认
 - `NONE` - 没有运行中的任务
 - 日志命令返回文件路径
 

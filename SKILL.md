@@ -347,12 +347,23 @@ python3 {skill_dir}/scripts/jenkins.py log-tail <job> <build_num>
 所有脚本命令遵循以下输出规范：
 
 **成功情况（退出码 0）：**
-- `trigger` 命令：输出构建信息到 stdout，格式为：
+- `trigger` 命令：输出构建信息到 stdout，**包含所有12个业务参数**：
   ```
   ✅ 已触发 {job} #{build_num}
   
   📦 构建参数：
-    {参数名}: {参数值}
+    flutterModuleBranch: master
+    iOSNativeBranch: master
+    androidNativeBranch: master
+    environment: test
+    version:
+    platform: iOS
+    uploadTarget: pgyer
+    updateNotes:
+    submitForReview: false
+    isDebug: false
+    needPullBranch: true
+    isOld: false
   ```
 - `status` 命令：输出状态信息到 stdout
 - `log-tail` / `full-log` 命令：输出日志文件的绝对路径到 stdout

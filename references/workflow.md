@@ -26,21 +26,21 @@ python3 jenkins.py trigger <job> <platform> <env> <flutter> <ios> [android] [isD
 
 ### Step 4: 返回结果
 
-成功触发后立即返回：
+成功触发后立即返回，**包含所有12个业务参数**：
 
 ```
 ✅ 已触发 my-job #124
 
 📦 构建参数：
-  platform: iOS
-  environment: test
-  uploadTarget: pgyer
-  submitForReview: false
   flutterModuleBranch: master
   iOSNativeBranch: developer
   androidNativeBranch: master
+  environment: test
   version:
+  platform: iOS
+  uploadTarget: pgyer
   updateNotes:
+  submitForReview: false
   isDebug: false
   needPullBranch: true
   isOld: false
@@ -55,17 +55,18 @@ python3 jenkins.py trigger <job> <platform> <env> <flutter> <ios> [android] [isD
   Job: my-job
   Build #: #123
   参数:
-    platform: iOS
-    environment: test
-    uploadTarget: pgyer
-    submitForReview: false
     flutterModuleBranch: master
     iOSNativeBranch: developer
     androidNativeBranch: master
+    environment: test
     version:
+    platform: iOS
+    uploadTarget: pgyer
     updateNotes:
+    submitForReview: false
     isDebug: false
     needPullBranch: false
+    isOld: false
 
 继续新任务将终止当前任务，是否继续？
 ```

@@ -7,17 +7,18 @@
 ✅ 已触发 my-job #124
 
 📦 构建参数：
-  platform: iOS
-  environment: test
-  uploadTarget: pgyer
-  submitForReview: false
   flutterModuleBranch: master
   iOSNativeBranch: master
   androidNativeBranch: master
+  environment: test
   version:
+  platform: iOS
+  uploadTarget: pgyer
   updateNotes:
+  submitForReview: false
   isDebug: false
   needPullBranch: true
+  isOld: false
 ```
 
 ---
@@ -29,17 +30,18 @@
 ✅ 已触发 my-job #125
 
 📦 构建参数：
-  platform: Android
-  environment: test
-  uploadTarget: pgyer
-  submitForReview: false
   flutterModuleBranch: master
   iOSNativeBranch: master
   androidNativeBranch: master
+  environment: test
   version:
+  platform: Android
+  uploadTarget: pgyer
   updateNotes:
+  submitForReview: false
   isDebug: true
   needPullBranch: true
+  isOld: false
 ```
 
 ---
@@ -52,17 +54,18 @@ INFO: 检测到 uploadTarget=appleAppStore，自动设置 platform=iOS, environm
 ✅ 已触发 my-job #126
 
 📦 构建参数：
-  platform: iOS
-  environment: product
-  uploadTarget: appleAppStore
-  submitForReview: false
   flutterModuleBranch: master
   iOSNativeBranch: master
   androidNativeBranch: master
+  environment: product
   version:
+  platform: iOS
+  uploadTarget: appleAppStore
   updateNotes:
+  submitForReview: false
   isDebug: false
   needPullBranch: true
+  isOld: false
 ```
 
 ---
@@ -117,17 +120,18 @@ INFO: 检测到 uploadTarget=appleAppStore，自动设置 platform=iOS, environm
   新构建号: #125
 
 📦 构建参数：
-  platform: iOS
-  environment: test
-  uploadTarget: pgyer
-  submitForReview: false
   flutterModuleBranch: master
   iOSNativeBranch: master
   androidNativeBranch: master
+  environment: test
   version:
+  platform: iOS
+  uploadTarget: pgyer
   updateNotes:
+  submitForReview: false
   isDebug: false
   needPullBranch: true
+  isOld: false
 ```
 
 ---
@@ -151,6 +155,7 @@ INFO: 检测到 uploadTarget=appleAppStore，自动设置 platform=iOS, environm
     updateNotes:
     isDebug: false
     needPullBranch: false
+    isOld: false
 
 继续新任务将终止当前任务，是否继续？
 ```
@@ -200,6 +205,7 @@ HINT: Android 不支持上传 App Store，请选择其他上传目标（如 pgye
   submitForReview = false
   isDebug = false
   needPullBranch = true
+  isOld = false
 
 --- 蒲公英上传 ---
   Upload to pgyer.com/k/abc123
@@ -236,6 +242,7 @@ HINT: Android 不支持上传 App Store，请选择其他上传目标（如 pgye
   submitForReview = false
   isDebug = false
   needPullBranch = true
+  isOld = false
 
 执行 'log-tail my-job 125' 查看最后 500 行日志
 ```
