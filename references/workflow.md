@@ -32,15 +32,15 @@ python3 jenkins.py trigger <job> <platform> <env> <flutter> <ios> [android] [isD
 ✅ 已触发 my-job #124
 
 📦 构建参数：
+  platform: iOS
+  environment: test
+  uploadTarget: pgyer
+  submitForReview: false
   flutterModuleBranch: master
   iOSNativeBranch: developer
   androidNativeBranch: master
-  environment: test
   version:
-  platform: iOS
-  uploadTarget: pgyer
   updateNotes:
-  submitForReview: false
   isDebug: false
   needPullBranch: true
   isOld: false
@@ -55,15 +55,15 @@ python3 jenkins.py trigger <job> <platform> <env> <flutter> <ios> [android] [isD
   Job: my-job
   Build #: #123
   参数:
+    platform: iOS
+    environment: test
+    uploadTarget: pgyer
+    submitForReview: false
     flutterModuleBranch: master
     iOSNativeBranch: developer
     androidNativeBranch: master
-    environment: test
     version:
-    platform: iOS
-    uploadTarget: pgyer
     updateNotes:
-    submitForReview: false
     isDebug: false
     needPullBranch: false
     isOld: false
@@ -103,15 +103,15 @@ python3 jenkins.py trigger <job> <platform> <env> <flutter> <ios> [android] [isD
 
 ```
 --- 参数 ---
+  platform = iOS
+  environment = test
+  uploadTarget = pgyer
+  submitForReview = false
   flutterModuleBranch = master
   iOSNativeBranch = master
   androidNativeBranch = master
-  environment = test
   version = 
-  platform = iOS
-  uploadTarget = pgyer
   updateNotes = 
-  submitForReview = false
   isDebug = false
   needPullBranch = true
   isOld = false

@@ -2,94 +2,113 @@
 
 ## 命令列表
 
-| 命令 | 语法 |
-|------|------|
-| trigger | `trigger <job> <platform> <env> <flutter> <ios> [android] [isDebug] [upload] [version] [updateNotes] [submitForReview] [needPullBranch] [isOld]` |
-| rerun | `rerun <job> <build_num>` |
-| rerun-last | `rerun-last <job>` |
-| stop | `stop <job> <build_num>` |
-| stop-running | `stop-running [job]...` |
-| status | `status [job]...` |
-| running | `running [job]...` |
-| last | `last <job>` |
-| info | `info <job> <build_num>` |
-| log-tail | `log-tail <job> <build_num> [n]` |
-| full-log | `full-log <job> <build_num>` |
+| 命令 | 语法 | 说明 |
+|------|------|------|
+| trigger | `trigger <job> <platform> <env> <flutter> <ios> [android] [isDebug] [upload] [version] [updateNotes] [submitForReview] [needPullBranch] [isOld]` | 触发新构建 |
+| rerun | `rerun <job> <build_num>` | 重新执行指定构建 |
+| rerun-last | `rerun-last <job>` | 重新执行上次构建 |
+| stop | `stop <job> <build_num>` | 停止指定构建 |
+| stop-running | `stop-running [job]...` | 停止运行中任务 |
+| status | `status [job]...` | 查看构建状态 |
+| running | `running [job]...` | 检查运行中任务 |
+| last | `last <job>` | 获取最后一次构建 |
+| info | `info <job> <build_num>` | 获取构建详情 |
+| log-tail | `log-tail <job> <build_num> [n]` | 获取日志尾部 |
+| full-log | `full-log <job> <build_num>` | 获取完整日志 |
 
-## 适用场景
+## 触发关键词
 
 当用户提到以下内容时调用此技能：
-- "打包"、"打个包"、"构建"
-- "触发 Jenkins"、"开始构建"
+- "打包"、"打个包"、"构建"、"触发构建"
 - "查看构建状态"、"检查运行状态"
-- "停止构建"、"终止任务"
+- "停止构建"、"终止任务"、"取消构建"
 - "查看日志"、"获取构建日志"
-- "重新执行"、"再打一次"
+- "重新执行"、"再打一次"、"重跑"
 
-## 输出解释
+## 输出格式
 
-**成功响应：**
-- `✅ 已触发 #{build_num}` - 构建触发成功，**输出脚本返回的所有参数，一个不漏**：
-  ```
-  ✅ 已触发 my-job #124
-  
-  📦 构建参数：
+**触发成功：**
+```
+✅ 已触发 my-job #124
+
+📦 构建参数：
+  platform: iOS
+  environment: test
+  uploadTarget: pgyer
+  submitForReview: false
+  flutterModuleBranch: master
+  iOSNativeBranch: master
+  androidNativeBranch: master
+  version:
+  updateNotes:
+  isDebug: false
+  needPullBranch: true
+  isOld: false
+```
+
+**运行中任务检测：**
+```
+发现有任务正在运行:
+  Job: my-job
+  Build #: #123
+  参数:
+    platform: iOS
+    environment: test
+    uploadTarget: pgyer
+    submitForReview: false
     flutterModuleBranch: master
     iOSNativeBranch: master
     androidNativeBranch: master
-    environment: test
     version:
-    platform: iOS
-    uploadTarget: pgyer
     updateNotes:
-    submitForReview: false
     isDebug: false
     needPullBranch: true
     isOld: false
-  ```
-- `发现有任务正在运行:` - 显示运行中任务详情（**包含所有业务参数，一个不漏**），需要用户确认
-- `NONE` - 没有运行中的任务
-- 日志命令返回文件路径
 
-**错误响应：**
-- "platform 参数不能为空" - 缺少必需参数
-- "environment 参数不能为空" - 缺少必需参数
-- "API Error HTTP XXXX" - Jenkins API 错误
-
-## 使用示例
-
-```bash
-# 触发构建
-python3 {skill_dir}/scripts/jenkins.py trigger myjob iOS test master master
-
-# 查看状态
-python3 {skill_dir}/scripts/jenkins.py status
-
-# 停止构建
-python3 {skill_dir}/scripts/jenkins.py stop myjob 123
-
-# 获取日志
-python3 {skill_dir}/scripts/jenkins.py log-tail myjob 123
+继续新任务将终止当前任务，是否继续？
 ```
 
-## 并发控制
+**状态查询：**
+```
+[my-job]
+  🔄 #124 运行中 (5min)
+  上次: #123 ✅ 构建成功 (15min)
+```
 
-触发任何构建之前：
-1. 使用 `running` 命令检查运行中任务
-2. 如果存在运行中任务，显示详情并请求确认
-3. 只有用户确认终止后才继续
+## 必需参数
+
+| 参数 | 类型 | 说明 |
+|------|------|------|
+| platform | string | `iOS` \| `Android` \| `all` |
+| environment | string | `test` \| `product` \| `develop` \| `gray` \| `preproduct` |
 
 ## 智能参数规则
 
-- `uploadTarget=appleAppStore` → 自动设置 `platform=iOS`, `environment=product`
-- `submitForReview=true` → 自动设置 `platform=iOS`, `environment=product`, `uploadTarget=appleAppStore`
+- `uploadTarget=appleAppStore` → `platform=iOS`, `environment=product`
+- `submitForReview=true` → `platform=iOS`, `environment=product`, `uploadTarget=appleAppStore`
 
-## 环境选项
+## 并发控制流程
 
-| 环境 | 描述 | Android 支持 |
-|------|------|-------------|
-| `test` | 测试环境 | ✅ |
-| `product` | 生产环境 | ✅ |
-| `develop` | 开发环境 | ❌ (自动降级为 test) |
-| `gray` | 灰度环境 | ❌ (自动降级为 test) |
-| `preproduct` | 预生产环境 | ✅ |
+1. 使用 `running` 命令检查运行中任务
+2. 如果存在运行中任务，显示脚本返回的构建号、所有参数
+3. 询问用户是否继续（会终止运行中任务）
+4. 只有用户确认后才继续
+
+## 错误处理
+
+**缺少必需参数：**
+```
+ERROR: platform 参数不能为空，请指定 iOS、Android 或 all
+```
+
+**API 错误：**
+```
+ERROR: 触发构建失败
+HINT: 请求失败 (403): Forbidden
+```
+
+## 调用方式
+
+```bash
+python3 {skill_dir}/scripts/jenkins.py <command> [args...]
+```

@@ -7,15 +7,15 @@
 ✅ 已触发 my-job #124
 
 📦 构建参数：
+  platform: iOS
+  environment: test
+  uploadTarget: pgyer
+  submitForReview: false
   flutterModuleBranch: master
   iOSNativeBranch: master
   androidNativeBranch: master
-  environment: test
   version:
-  platform: iOS
-  uploadTarget: pgyer
   updateNotes:
-  submitForReview: false
   isDebug: false
   needPullBranch: true
   isOld: false
@@ -30,15 +30,15 @@
 ✅ 已触发 my-job #125
 
 📦 构建参数：
+  platform: Android
+  environment: test
+  uploadTarget: pgyer
+  submitForReview: false
   flutterModuleBranch: master
   iOSNativeBranch: master
   androidNativeBranch: master
-  environment: test
   version:
-  platform: Android
-  uploadTarget: pgyer
   updateNotes:
-  submitForReview: false
   isDebug: true
   needPullBranch: true
   isOld: false
@@ -54,15 +54,15 @@ INFO: 检测到 uploadTarget=appleAppStore，自动设置 platform=iOS, environm
 ✅ 已触发 my-job #126
 
 📦 构建参数：
+  platform: iOS
+  environment: product
+  uploadTarget: appleAppStore
+  submitForReview: false
   flutterModuleBranch: master
   iOSNativeBranch: master
   androidNativeBranch: master
-  environment: product
   version:
-  platform: iOS
-  uploadTarget: appleAppStore
   updateNotes:
-  submitForReview: false
   isDebug: false
   needPullBranch: true
   isOld: false
@@ -82,12 +82,8 @@ INFO: 检测到 uploadTarget=appleAppStore，自动设置 platform=iOS, environm
 **有运行中任务时：**
 ```
 [my-job]
-  Running: #124 (5min)
-    Params:
-      platform: iOS
-      environment: test
-      uploadTarget: pgyer
-  Last: #123 ✅ 构建成功 (15min)
+  🔄 #124 运行中 (5min)
+  上次: #123 ✅ 构建成功 (15min)
 ```
 
 ---
@@ -120,15 +116,15 @@ INFO: 检测到 uploadTarget=appleAppStore，自动设置 platform=iOS, environm
   新构建号: #125
 
 📦 构建参数：
+  platform: iOS
+  environment: test
+  uploadTarget: pgyer
+  submitForReview: false
   flutterModuleBranch: master
   iOSNativeBranch: master
   androidNativeBranch: master
-  environment: test
   version:
-  platform: iOS
-  uploadTarget: pgyer
   updateNotes:
-  submitForReview: false
   isDebug: false
   needPullBranch: true
   isOld: false
@@ -143,7 +139,7 @@ INFO: 检测到 uploadTarget=appleAppStore，自动设置 platform=iOS, environm
 发现有任务正在运行:
   Job: my-job
   Build #: #124
-  Params:
+  参数:
     platform: iOS
     environment: test
     uploadTarget: pgyer
@@ -194,15 +190,15 @@ HINT: Android 不支持上传 App Store，请选择其他上传目标（如 pgye
 持续时间: 15min
 
 --- 参数 ---
+  platform = iOS
+  environment = test
+  uploadTarget = pgyer
+  submitForReview = false
   flutterModuleBranch = master
   iOSNativeBranch = master
   androidNativeBranch = master
-  environment = test
   version = 
-  platform = iOS
-  uploadTarget = pgyer
   updateNotes = 
-  submitForReview = false
   isDebug = false
   needPullBranch = true
   isOld = false
@@ -231,15 +227,15 @@ HINT: Android 不支持上传 App Store，请选择其他上传目标（如 pgye
   ^
 
 --- 参数 ---
+  platform = iOS
+  environment = test
+  uploadTarget = pgyer
+  submitForReview = false
   flutterModuleBranch = develop
   iOSNativeBranch = develop
   androidNativeBranch = master
-  environment = test
   version = 
-  platform = iOS
-  uploadTarget = pgyer
   updateNotes = 
-  submitForReview = false
   isDebug = false
   needPullBranch = true
   isOld = false

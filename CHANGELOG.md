@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.1] - 2026-05-19
+
+### Updated
+
+- **文档结构优化**:
+  - `SKILL.md`: 精简为 112 行，去除重复内容，保持核心指令简洁
+  - `SKILL_INSTRUCTIONS.md`: 作为 Agent 操作指南，包含命令列表、触发关键词、输出格式
+  - `references/workflow.md`: 详细工作流说明，参数顺序与脚本实际输出一致
+  - `examples/output.md`: 统一参数顺序，与脚本输出保持一致
+
+- **参数顺序统一**: 所有文档中构建参数顺序与 `jenkins.py` 脚本实际输出一致
+
+- **语言一致性**: 确保所有文档语言统一为中文
+
 ## [1.2.0] - 2026-05-19
 
 ### Added
