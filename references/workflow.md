@@ -26,7 +26,7 @@ python3 jenkins.py trigger <job> <platform> <env> <flutter> <ios> [android] [isD
 
 ### Step 4: 返回结果
 
-成功触发后立即返回，**包含所有12个业务参数**：
+成功触发后立即返回，**包含脚本返回的所有业务参数，一个不漏**：
 
 ```
 ✅ 已触发 my-job #124

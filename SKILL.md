@@ -347,7 +347,7 @@ python3 {skill_dir}/scripts/jenkins.py log-tail <job> <build_num>
 所有脚本命令遵循以下输出规范：
 
 **成功情况（退出码 0）：**
-- `trigger` 命令：输出构建信息到 stdout，**包含所有12个业务参数**：
+- `trigger` 命令：输出构建信息到 stdout，**包含脚本返回的所有业务参数，一个不漏**：
   ```
   ✅ 已触发 {job} #{build_num}
   
